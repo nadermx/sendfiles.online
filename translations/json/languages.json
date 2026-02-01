@@ -1,0 +1,12 @@
+[
+    {"text": "English", "iso": "en", "en_label": "English"},
+    {"text": "Español", "iso": "es", "en_label": "Spanish"},
+    {"text": "Français", "iso": "fr", "en_label": "French"},
+    {"text": "Deutsch", "iso": "de", "en_label": "German"},
+    {"text": "Português", "iso": "pt", "en_label": "Portuguese"},
+    {"text": "Italiano", "iso": "it", "en_label": "Italian"},
+    {"text": "Nederlands", "iso": "nl", "en_label": "Dutch"},
+    {"text": "日本語", "iso": "ja", "en_label": "Japanese"},
+    {"text": "中文", "iso": "zh", "en_label": "Chinese"},
+    {"text": "한국어", "iso": "ko", "en_label": "Korean"}
+]

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Files Sent - SendFiles{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <div style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;">&#10003;</div>
+            <h1 style="font-size: 1.75rem; font-weight: 600; margin-bottom: 1rem;">FILES SENT</h1>
+            <p class="text-muted mb-4">Your files are ready to be downloaded</p>
+
+            <!-- Share Link -->
+            <div class="mb-4">
+                <label class="small text-muted mb-2 d-block">Share this link:</label>
+                <div class="input-group" style="max-width: 500px; margin: 0 auto;">
+                    <input type="text" id="share-link" class="form-control font-mono" value="{{ transfer.share_url }}" readonly style="border-radius: 0;">
+                    <button class="btn btn-primary" onclick="copyLink()" id="copy-btn">COPY</button>
+                </div>
+            </div>
+
+            <!-- Transfer Details -->
+            <div class="card mt-4" style="text-align: left;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">Files</small>
+                            <p class="font-mono mb-0">{{ transfer.file_count }}</p>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Total Size</small>
+                            <p class="font-mono mb-0">{{ transfer.format_size }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">Expires</small>
+                            <p class="font-mono mb-0">{{ transfer.expires_at|date:"M d, Y" }}</p>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Password</small>
+                            <p class="font-mono mb-0">{% if transfer.is_password_protected %}Yes{% else %}No{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4">
+                <a href="/" class="btn btn-outline-primary">SEND MORE FILES</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyLink() {
+    const input = document.getElementById('share-link');
+    input.select();
+    document.execCommand('copy');
+
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'COPIED';
+    setTimeout(() => {
+        btn.textContent = 'COPY';
+    }, 2000);
+}
+</script>
+{% endblock %}
