@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}About Us - SendFiles.Online{% endblock %}
-{% block description %}Learn about SendFiles.Online - a fast, simple file sharing platform. Our mission is to make sharing large files easy and accessible for everyone.{% endblock %}
+{% block title %}About Us - SendFiles.Online | Fast, Simple File Sharing{% endblock %}
+{% block description %}Learn about SendFiles.Online. We make sharing large files simple - up to 10GB free, no signup required. Our mission is to remove the friction from file sharing.{% endblock %}
 {% block og_title %}About Us - SendFiles.Online{% endblock %}
 {% block og_description %}Learn about SendFiles.Online and our mission to make file sharing simple.{% endblock %}
 {% block twitter_title %}About Us - SendFiles.Online{% endblock %}
@@ -35,7 +35,14 @@
     "@type": "AboutPage",
     "name": "About SendFiles.Online",
     "description": "Learn about SendFiles.Online and our mission to make file sharing simple and accessible.",
-    "url": "https://sendfiles.online/about/"
+    "url": "https://sendfiles.online/about/",
+    "mainEntity": {
+        "@type": "Organization",
+        "name": "SendFiles.Online",
+        "url": "https://sendfiles.online",
+        "description": "Fast, simple file sharing platform. Send files up to 10GB for free.",
+        "foundingDate": "2024"
+    }
 }
 </script>
 {% endblock %}
@@ -52,27 +59,120 @@
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
+<div class="container py-5">
+    <!-- Hero -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <h1 class="display-5 fw-bold mb-3">About SendFiles.Online</h1>
+            <p class="lead text-muted">We believe sharing files should be as simple as sharing a link.</p>
+        </div>
+    </div>
+
+    <!-- Mission -->
+    <div class="row justify-content-center mb-5">
         <div class="col-lg-8">
-            <h1 class="text-center mb-4">{{ g.i18n.about|default:"About Us" }}</h1>
+            <h2 class="h4 mb-3">Our Mission</h2>
+            <p>Every day, millions of people struggle with file size limits when trying to share photos, videos, documents, and projects. Email attachments max out. Messaging apps compress your files. Cloud services require accounts and complicated sharing settings.</p>
+            <p>We built SendFiles.Online to fix that. <strong>Drag. Drop. Share.</strong> That's it. No account required, no confusing interfaces, no waiting for uploads to process. Just fast, simple file sharing that works.</p>
+        </div>
+    </div>
 
-            <p class="lead">{{ g.i18n.about_intro|default:"SendFiles.Online is a fast, simple way to share large files with anyone." }}</p>
+    <!-- What We Offer -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <h2 class="h4 mb-4">What We Offer</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5"><i class="fas fa-bolt text-warning me-2"></i> Fast Transfers</h3>
+                            <p class="text-muted mb-0">Our servers are optimized for speed. Upload and share files quickly, without waiting around.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5"><i class="fas fa-gift text-success me-2"></i> Generous Free Tier</h3>
+                            <p class="text-muted mb-0">Send files up to 10GB for free. No credit card, no signup for basic transfers. Just upload and share.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5"><i class="fas fa-lock text-primary me-2"></i> Secure by Default</h3>
+                            <p class="text-muted mb-0">All transfers use HTTPS encryption. Add password protection for sensitive files.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="h5"><i class="fas fa-globe text-info me-2"></i> Works Everywhere</h3>
+                            <p class="text-muted mb-0">No app to install. Works in any modern browser on desktop, mobile, or tablet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <h3 class="mt-4">Our Mission</h3>
-            <p>{{ g.i18n.about_mission|default:"We believe sharing files should be simple, fast, and accessible to everyone. No complicated signups, no confusing interfaces - just drag, drop, and share." }}</p>
+    <!-- Stats -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <div class="card bg-light border-0">
+                <div class="card-body py-4">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="display-6 fw-bold">10GB</div>
+                            <div class="text-muted small">Free Transfer Limit</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="display-6 fw-bold">14</div>
+                            <div class="text-muted small">Days Storage</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="display-6 fw-bold">0</div>
+                            <div class="text-muted small">Account Required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <h3 class="mt-4">What We Offer</h3>
-            <ul>
-                <li>Send files up to 10GB for free</li>
-                <li>No account required for basic transfers</li>
-                <li>14-day file storage included</li>
-                <li>Optional password protection</li>
-                <li>File encryption for sensitive documents</li>
-            </ul>
+    <!-- How It Works -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8">
+            <h2 class="h4 mb-4">How It Works</h2>
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <div class="display-4 text-muted mb-2">1</div>
+                    <h3 class="h5">Upload</h3>
+                    <p class="text-muted small">Drag and drop your files onto the upload area. We handle files up to 10GB.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="display-4 text-muted mb-2">2</div>
+                    <h3 class="h5">Get Link</h3>
+                    <p class="text-muted small">Once uploaded, you get a unique download link. Add a password if needed.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="display-4 text-muted mb-2">3</div>
+                    <h3 class="h5">Share</h3>
+                    <p class="text-muted small">Send the link anywhere - email, text, social media. Recipients click to download.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <h3 class="mt-4">Get in Touch</h3>
-            <p>{{ g.i18n.about_contact|default:"Have questions or feedback? We'd love to hear from you." }} <a href="/contact/">Contact us</a>.</p>
+    <!-- Contact CTA -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <hr class="my-5">
+            <h2 class="h4 mb-3">Questions or Feedback?</h2>
+            <p class="text-muted mb-4">We'd love to hear from you. Whether you have a question, suggestion, or just want to say hello.</p>
+            <a href="/contact/" class="btn btn-primary">Contact Us</a>
         </div>
     </div>
 </div>

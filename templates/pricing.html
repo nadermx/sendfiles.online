@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Pricing - SendFiles.Online | File Sharing Plans{% endblock %}
-{% block description %}Choose the perfect SendFiles.Online plan. Free tier with 10GB transfers, or upgrade to Pro for larger files and longer storage. No hidden fees.{% endblock %}
+{% block title %}Pricing - SendFiles.Online | Simple File Sharing Plans{% endblock %}
+{% block description %}SendFiles.Online pricing. Free plan with 10GB transfers and 14-day storage. Upgrade to Pro for 50GB transfers and 30-day storage. No hidden fees.{% endblock %}
 {% block og_title %}Pricing - SendFiles.Online{% endblock %}
-{% block og_description %}Choose the perfect file sharing plan. Free 10GB transfers or upgrade for more features.{% endblock %}
+{% block og_description %}Free 10GB file transfers. Upgrade to Pro for larger files and longer storage.{% endblock %}
 {% block twitter_title %}Pricing - SendFiles.Online{% endblock %}
-{% block twitter_description %}Choose the perfect file sharing plan. Free 10GB transfers or upgrade for more.{% endblock %}
+{% block twitter_description %}Free 10GB file transfers. Upgrade to Pro for more.{% endblock %}
 {% block canonical_path %}/pricing/{% endblock %}
 
 {% block structured_data %}
@@ -36,26 +36,26 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "What's included in the free plan?",
+            "name": "Is SendFiles.Online really free?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The free plan includes up to 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required."
+                "text": "Yes! The free plan includes 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required, no signup needed for basic transfers."
             }
         },
         {
             "@type": "Question",
-            "name": "Can I cancel my subscription anytime?",
+            "name": "What's the difference between Free and Pro?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, you can change or cancel your subscription at any time. We offer a 30-day money-back guarantee on all paid plans."
+                "text": "Pro gives you larger transfers (50GB vs 10GB), longer storage (30 days vs 14 days), download tracking, custom branding, and priority support."
             }
         },
         {
             "@type": "Question",
-            "name": "Do credits expire?",
+            "name": "Can I cancel my Pro subscription anytime?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No, your credits never expire. Use them whenever you need them."
+                "text": "Yes, you can cancel anytime. We also offer a 30-day money-back guarantee on all paid plans."
             }
         }
     ]
@@ -75,78 +75,223 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container text-center">
-        <h1 class="page-header">{{ g.i18n.pricing|default:"Pricing" }}</h1>
-        <p class="lead">{{ g.i18n.pricing_subtitle|default:"Choose the plan that works for you" }}</p>
+<div class="container py-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold mb-3">Simple, Transparent Pricing</h1>
+        <p class="lead text-muted">Start free. Upgrade when you need more.</p>
     </div>
-    <form class="container-md pricing-form"
-          action="{% url 'checkout' %}"
-          method="get">
-        <div class="row">
-            {% for plan in plans %}
-                <div class="col">
-                    <div class="form-check">
-                        <input class="form-check-input"
-                               type="radio"
-                               name="plan"
-                               id="{{ plan.code_name }}"
-                               value="{{ plan.code_name }}"
-                               {% if forloop.first %}checked{% endif %} >
-                        <label class="form-check-label"
-                               for="{{ plan.code_name }}">
-                                <span class="price-wrapper">
-                                    <span class="price-value">US$ {{ plan.price }}</span><br>
-                                    {% if plan.is_subscription %}
-                                        {{ g.i18n.monthly|default:"per month" }}
-                                    {% else %}
-                                        {{ g.i18n.single_charge|default:"one-time" }}
-                                    {% endif %}
-                                </span>
-                            <br>
-                            <span class="plan-check">
-                                {% include 'svgs/check.html' %}
-                                {% if plan.credits %}
-                                    <span>{{ plan.credits }} {{ g.i18n.credits|default:"credits" }}</span>
-                                {% else %}
-                                    <span>{{ g.i18n.unlimited_access|default:"Unlimited access" }}</span>
-                                {% endif %}
-                            </span>
-                        </label>
+
+    <!-- Pricing Cards -->
+    <div class="row justify-content-center g-4 mb-5">
+        <!-- Free Plan -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-1">Free</h2>
+                    <p class="text-muted small mb-4">For occasional sharing</p>
+
+                    <div class="mb-4">
+                        <span class="display-4 fw-bold">$0</span>
+                        <span class="text-muted">/forever</span>
                     </div>
+
+                    <a href="/" class="btn btn-outline-primary btn-lg w-100 mb-4">Start Sharing</a>
+
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>10GB</strong> per transfer</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>14 days</strong> file storage</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited transfers</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Password protection</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> No signup required</li>
+                        <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> Download tracking</li>
+                        <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> Custom branding</li>
+                    </ul>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-        <hr>
-        <button id="pricingbutton"
-                class="btn btn-success btn-lg">{{ g.i18n.purchase|default:"Purchase" }}</button>
-        <br>
-        <p class="small mt-3">
-            <strong>{{ g.i18n.risk_free|default:"Risk-free" }}:</strong> {{ g.i18n.money_back|default:"30-day money-back guarantee" }}<br>
-            <strong>{{ g.i18n.flexible|default:"Flexible" }}:</strong> {{ g.i18n.change_plan_whenever|default:"Change or cancel anytime" }}<br>
-            <strong>{{ g.i18n.fair|default:"Fair" }}:</strong> {{ g.i18n.credits_never_expire|default:"Credits never expire" | safe }}
-        </p>
-    </form>
+
+        <!-- Pro Plan -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card h-100 border-dark">
+                <div class="card-header bg-dark text-white text-center py-2">
+                    <small class="fw-bold">MOST POPULAR</small>
+                </div>
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-1">Pro</h2>
+                    <p class="text-muted small mb-4">For professionals & teams</p>
+
+                    <div class="mb-4">
+                        <span class="display-4 fw-bold">$9</span>
+                        <span class="text-muted">/month</span>
+                    </div>
+
+                    <a href="/checkout/?plan=pro" class="btn btn-primary btn-lg w-100 mb-4">Upgrade to Pro</a>
+
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>50GB</strong> per transfer</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>30 days</strong> file storage</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited transfers</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Password protection</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Account dashboard</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Download tracking</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Remove SendFiles branding</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Comparison Table -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2 class="h4 text-center mb-4">Feature Comparison</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th class="text-center">Free</th>
+                            <th class="text-center">Pro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Max file size per transfer</td>
+                            <td class="text-center">10GB</td>
+                            <td class="text-center"><strong>50GB</strong></td>
+                        </tr>
+                        <tr>
+                            <td>File storage duration</td>
+                            <td class="text-center">14 days</td>
+                            <td class="text-center"><strong>30 days</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Number of transfers</td>
+                            <td class="text-center">Unlimited</td>
+                            <td class="text-center">Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td>Password protection</td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>HTTPS encryption</td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Account required</td>
+                            <td class="text-center">No</td>
+                            <td class="text-center">Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Download tracking</td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Transfer history</td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Remove SendFiles branding</td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Priority support</td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <!-- FAQ Section -->
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="faq-section">
-                    <h2>Pricing FAQ</h2>
-                    <div class="faq-item">
-                        <div class="faq-question">What's included in the free plan?</div>
-                        <div class="faq-answer">The free plan includes up to 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required.</div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8">
+            <h2 class="h4 text-center mb-4">Frequently Asked Questions</h2>
+
+            <div class="accordion" id="pricingFaq">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Is SendFiles.Online really free?
+                        </button>
+                    </h3>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body text-muted">
+                            Yes! The free plan includes 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required, and you don't even need to create an account for basic transfers.
+                        </div>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question">Can I cancel my subscription anytime?</div>
-                        <div class="faq-answer">Yes, you can change or cancel your subscription at any time. We offer a 30-day money-back guarantee on all paid plans.</div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            What happens when my files expire?
+                        </button>
+                    </h3>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body text-muted">
+                            Files are automatically deleted after the storage period (14 days for Free, 30 days for Pro). You'll need to upload them again if you want to share them after expiration. We send reminder emails to Pro users before files expire.
+                        </div>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question">Do credits expire?</div>
-                        <div class="faq-answer">No, your credits never expire. Use them whenever you need them.</div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Can I cancel my Pro subscription anytime?
+                        </button>
+                    </h3>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body text-muted">
+                            Yes, you can cancel anytime from your account settings. You'll continue to have Pro features until the end of your billing period. We also offer a 30-day money-back guarantee if you're not satisfied.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            Do you offer team or business plans?
+                        </button>
+                    </h3>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body text-muted">
+                            For teams and businesses with specific needs, please <a href="/contact/">contact us</a>. We can create custom plans with higher limits, team accounts, API access, and dedicated support.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            What payment methods do you accept?
+                        </button>
+                    </h3>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body text-muted">
+                            We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and select cryptocurrencies. All payments are processed securely through our payment partners.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-5 pt-4">
+        <h2 class="h4 mb-3">Ready to share files?</h2>
+        <p class="text-muted mb-4">No signup required. Start sharing in seconds.</p>
+        <a href="/" class="btn btn-primary btn-lg">Upload Files Free</a>
+    </div>
+</div>
 {% endblock %}

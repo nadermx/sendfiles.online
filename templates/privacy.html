@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}Privacy Policy - SendFiles.Online{% endblock %}
-{% block description %}SendFiles.Online privacy policy. Learn how we collect, use, and protect your personal information when you use our file sharing service.{% endblock %}
+{% block description %}SendFiles.Online privacy policy. Learn how we collect, use, and protect your data. We respect your privacy and only collect what's necessary to provide our service.{% endblock %}
 {% block og_title %}Privacy Policy - SendFiles.Online{% endblock %}
 {% block og_description %}Learn how SendFiles.Online protects your privacy and handles your data.{% endblock %}
 {% block twitter_title %}Privacy Policy - SendFiles.Online{% endblock %}
-{% block twitter_description %}Learn how SendFiles.Online protects your privacy and handles your data.{% endblock %}
+{% block twitter_description %}Learn how SendFiles.Online protects your privacy.{% endblock %}
 {% block canonical_path %}/privacy/{% endblock %}
 
 {% block structured_data %}
@@ -43,36 +43,100 @@
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <h1 class="text-center mb-4">{{ g.i18n.privacy_policy|default:"Privacy Policy" }}</h1>
+            <h1 class="text-center mb-4">Privacy Policy</h1>
+            <p class="lead text-center text-muted mb-5">Your privacy matters. Here's how we handle your data.</p>
 
-            <h3>Information We Collect</h3>
-            <p>Your privacy is important to us. We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we're collecting it and how it will be used.</p>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3"><i class="fas fa-file-alt me-2 text-primary"></i> The Short Version</h2>
+                    <ul class="mb-0">
+                        <li>We don't require accounts for basic file transfers</li>
+                        <li>We don't sell your data to anyone</li>
+                        <li>Files are automatically deleted after the storage period (14 days for free, 30 days for Pro)</li>
+                        <li>We use HTTPS encryption for all transfers</li>
+                        <li>We only collect what's necessary to provide the service</li>
+                    </ul>
+                </div>
+            </div>
 
-            <h3>How We Use Information</h3>
-            <p>We only retain collected information for as long as necessary to provide you with your requested service. What data we store, we'll protect within commercially acceptable means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification.</p>
+            <h2 class="h4 mt-5 mb-3">Information We Collect</h2>
 
-            <h3>Information Sharing</h3>
-            <p>We don't share any personally identifying information publicly or with third-parties, except when required to by law.</p>
+            <h3 class="h5 mt-4">For Anonymous Transfers (No Account)</h3>
+            <p>When you use SendFiles.Online without creating an account, we collect:</p>
+            <ul>
+                <li><strong>Uploaded files:</strong> Stored temporarily for the transfer duration (14 days)</li>
+                <li><strong>IP address:</strong> Used for rate limiting and abuse prevention</li>
+                <li><strong>Basic analytics:</strong> Page views, transfer counts (anonymized)</li>
+            </ul>
+            <p>We do NOT collect your name, email, or any personal information for anonymous transfers.</p>
 
-            <h3>External Links</h3>
-            <p>Our website may link to external sites that are not operated by us. Please be aware that we have no control over the content and practices of these sites, and cannot accept responsibility or liability for their respective privacy policies.</p>
+            <h3 class="h5 mt-4">For Registered Accounts</h3>
+            <p>If you create an account (required for Pro features), we also collect:</p>
+            <ul>
+                <li><strong>Email address:</strong> For account management and notifications</li>
+                <li><strong>Password:</strong> Stored securely using industry-standard hashing</li>
+                <li><strong>Payment information:</strong> Processed by our payment partners (Stripe/PayPal) - we don't store your card details</li>
+                <li><strong>Transfer history:</strong> So you can manage your uploads</li>
+            </ul>
 
-            <h3>Your Rights</h3>
-            <p>You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services.</p>
+            <h2 class="h4 mt-5 mb-3">How We Use Your Information</h2>
+            <ul>
+                <li>To provide the file transfer service</li>
+                <li>To prevent abuse and enforce our terms of service</li>
+                <li>To send account-related emails (if you have an account)</li>
+                <li>To improve our service through anonymized analytics</li>
+            </ul>
+            <p>We do NOT use your information for advertising or sell it to third parties.</p>
 
-            <h3>Data Security</h3>
-            <p>We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+            <h2 class="h4 mt-5 mb-3">File Storage and Deletion</h2>
+            <ul>
+                <li><strong>Free transfers:</strong> Files are automatically deleted after 14 days</li>
+                <li><strong>Pro transfers:</strong> Files are automatically deleted after 30 days</li>
+                <li><strong>Manual deletion:</strong> You can delete your files at any time from the upload success page</li>
+            </ul>
+            <p>When files are deleted, they are permanently removed from our servers. We do not keep backups of user files.</p>
 
-            <h3>Cookies</h3>
-            <p>We use cookies to enhance your experience on our website. You can choose to disable cookies through your browser settings, though this may affect certain functionality.</p>
+            <h2 class="h4 mt-5 mb-3">Data Security</h2>
+            <ul>
+                <li>All transfers use HTTPS (TLS 1.2+) encryption</li>
+                <li>Files are stored on secure servers with restricted access</li>
+                <li>Passwords are hashed using bcrypt</li>
+                <li>We regularly update our security practices</li>
+            </ul>
 
-            <h3>Changes to This Policy</h3>
-            <p>Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.</p>
+            <h2 class="h4 mt-5 mb-3">Cookies</h2>
+            <p>We use cookies for:</p>
+            <ul>
+                <li><strong>Session management:</strong> To keep you logged in (if you have an account)</li>
+                <li><strong>Analytics:</strong> To understand how people use our service (anonymized)</li>
+            </ul>
+            <p>You can disable cookies in your browser, though this may affect some functionality.</p>
 
-            <p class="text-muted mt-4"><small>Last updated: {% now "F Y" %}</small></p>
+            <h2 class="h4 mt-5 mb-3">Third-Party Services</h2>
+            <p>We use the following third-party services:</p>
+            <ul>
+                <li><strong>Payment processing:</strong> Stripe and PayPal for secure payments</li>
+                <li><strong>Analytics:</strong> To understand usage patterns (anonymized data only)</li>
+                <li><strong>CDN:</strong> For faster file delivery</li>
+            </ul>
+
+            <h2 class="h4 mt-5 mb-3">Your Rights</h2>
+            <p>You have the right to:</p>
+            <ul>
+                <li>Access your personal data (contact us for a copy)</li>
+                <li>Delete your account and associated data</li>
+                <li>Opt out of marketing communications</li>
+                <li>Request correction of inaccurate data</li>
+            </ul>
+
+            <h2 class="h4 mt-5 mb-3">Contact Us</h2>
+            <p>If you have questions about this privacy policy or your data, please <a href="/contact/">contact us</a>.</p>
+
+            <hr class="my-5">
+            <p class="text-muted small text-center">Last updated: {% now "F Y" %}</p>
         </div>
     </div>
 </div>
