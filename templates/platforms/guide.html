@@ -8,6 +8,10 @@
 {% block twitter_description %}Bypass {{ platform.name }}'s {{ platform.file_limit }} file limit. Send up to 3GB free.{% endblock %}
 {% block canonical_path %}/send-large-files/{{ platform_slug }}/{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/platform-sprites.css">
+{% endblock %}
+
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -121,8 +125,8 @@
             <!-- Hero -->
             <div class="mb-5">
                 <div class="d-flex align-items-center mb-3">
-                    <div class="platform-badge me-3" style="background: {{ platform.color }}; color: {% if platform.text_color %}{{ platform.text_color }}{% else %}#fff{% endif %}; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fab fa-{{ platform.icon }}" style="font-size: 1.8rem;"></i>
+                    <div class="platform-badge me-3" style="background: {{ platform.color }}; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; padding: 14px;">
+                        <span class="platform-icon platform-icon-{{ platform_slug }}" style="filter: brightness(0) invert(1);"></span>
                     </div>
                     <div>
                         <h1 class="h2 mb-0">How to Send Large Files on {{ platform.name }}</h1>
@@ -300,8 +304,8 @@
 
             <!-- Platform Info Card -->
             <div class="card mb-4">
-                <div class="card-header" style="background: {{ platform.color }}; color: {% if platform.text_color %}{{ platform.text_color }}{% else %}#fff{% endif %};">
-                    <i class="fab fa-{{ platform.icon }} me-2"></i> {{ platform.name }} File Limits
+                <div class="card-header d-flex align-items-center" style="background: {{ platform.color }}; color: {% if platform.text_color %}{{ platform.text_color }}{% else %}#fff{% endif %};">
+                    <span class="platform-icon platform-icon-{{ platform_slug }} me-2" style="width: 20px; height: 20px; background-size: 1280px auto; filter: brightness(0) invert(1);"></span> {{ platform.name }} File Limits
                 </div>
                 <div class="card-body">
                     <table class="table table-sm mb-0">
@@ -336,8 +340,8 @@
                 <div class="list-group list-group-flush">
                     {% for related in related_platforms %}
                     <a href="{% url 'platform-guide' platform_slug=related.slug %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <span>
-                            <i class="fab fa-{{ related.icon }} me-2" style="color: {{ related.color }};"></i>
+                        <span class="d-flex align-items-center">
+                            <span class="platform-icon platform-icon-{{ related.slug }} me-2" style="width: 20px; height: 20px; background-size: 1280px auto;"></span>
                             {{ related.name }}
                         </span>
                         <small class="text-muted">{{ related.file_limit }}</small>

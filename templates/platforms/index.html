@@ -8,6 +8,10 @@
 {% block twitter_description %}Send files larger than platform limits on WhatsApp, Instagram, Gmail, Slack, and 50+ platforms.{% endblock %}
 {% block canonical_path %}/send-large-files/{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/platform-sprites.css">
+{% endblock %}
+
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -91,9 +95,7 @@
                 <a href="{% url 'platform-guide' platform_slug=platform.slug %}" class="card h-100 text-decoration-none platform-card" style="border-left: 4px solid {{ platform.color }};">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                            <div class="platform-icon me-3" style="color: {{ platform.color }};">
-                                <i class="fab fa-{{ platform.icon }}" style="font-size: 1.5rem;"></i>
-                            </div>
+                            <div class="platform-icon platform-icon-{{ platform.slug }} me-3"></div>
                             <div>
                                 <h3 class="h6 mb-0 text-dark">{{ platform.name }}</h3>
                                 <small class="text-muted">{{ platform.file_limit }} limit</small>
@@ -153,10 +155,6 @@
 .platform-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.platform-icon i {
-    width: 24px;
-    text-align: center;
 }
 </style>
 {% endblock %}
