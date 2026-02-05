@@ -13,6 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('ads.txt', TemplateView.as_view(template_name='ads.txt', content_type='text/plain')),
+    path('captcha/', include('captcha.urls')),
     path('api/accounts/', include('accounts.urls')),
     path('ipns/', include('finances.urls.payment')),
     path('', include('transfers.urls')),  # Transfer routes (API + download pages)
