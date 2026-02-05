@@ -1,4 +1,54 @@
 {% extends 'base.html' %}
+
+{% block title %}Checkout - SendFiles.Online{% endblock %}
+{% block description %}Complete your purchase securely. Pay with credit card, PayPal, or Bitcoin for SendFiles.Online premium features.{% endblock %}
+{% block og_title %}Checkout - SendFiles.Online{% endblock %}
+{% block og_description %}Complete your purchase securely with multiple payment options.{% endblock %}
+{% block twitter_title %}Checkout - SendFiles.Online{% endblock %}
+{% block twitter_description %}Complete your purchase securely with multiple payment options.{% endblock %}
+{% block canonical_path %}/checkout/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://sendfiles.online/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Pricing",
+            "item": "https://sendfiles.online/pricing/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Checkout",
+            "item": "https://sendfiles.online/checkout/"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><span class="current">Checkout</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
     {% if 'squareup' in processors %}
         <style>
@@ -125,7 +175,7 @@
                             </div>
                             <br>
                             <button class="btn btn-success btn-block">{{ g.i18n.purchase }}</button>
-                            <p>🔒 {{ g.i18n.payment_secured }} Stripe</p>
+                            <p>{{ g.i18n.payment_secured }} Stripe</p>
                         </form>
                     </div>
                 {% endif %}
@@ -164,7 +214,7 @@
                             </div>
                             <br>
                             <button class="btn btn-success btn-block">{{ g.i18n.purchase}}</button>
-                            <p>🔒 {{ g.i18n.payment_secured}} Squareup</p>
+                            <p>{{ g.i18n.payment_secured}} Squareup</p>
                         </form>
                     </div>
                 {% endif %}
@@ -208,7 +258,7 @@
                             </a>
                             <script src="https://commerce.coinbase.com/v1/checkout.js?version=201807">
                             </script>
-                            <p>🔒 {{ g.i18n.payment_secured }} CoinBase</p>
+                            <p>{{ g.i18n.payment_secured }} CoinBase</p>
                         {% else %}
                             This plan has no coinbase button
                         {% endif %}

@@ -1,6 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Download Files - SendFiles{% endblock %}
+{% block title %}Download Files - SendFiles.Online{% endblock %}
+{% block description %}Download your files securely from SendFiles.Online. Fast, reliable file sharing with no signup required.{% endblock %}
+{% block og_title %}Download Files - SendFiles.Online{% endblock %}
+{% block og_description %}Download your files securely from SendFiles.Online.{% endblock %}
+{% block twitter_title %}Download Files - SendFiles.Online{% endblock %}
+{% block twitter_description %}Download your files securely from SendFiles.Online.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://sendfiles.online/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Download",
+            "item": "https://sendfiles.online/d/{{ transfer.short_id }}/"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><span class="current">Download</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
 
 {% block content %}
 <div class="container py-5">

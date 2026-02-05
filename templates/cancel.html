@@ -1,16 +1,70 @@
 {% extends 'base.html' %}
-{% block content %}
-<h1>{{ g.i18n.cancel }}</h1>
-<div class="container">
-    <div class="row">
-        <h3>{{ g.i18n.cancelled_instantly}}</h3>
-        <form action="/cancel/" method="post">
-            {% csrf_token %}
-            <button class="btn btn-danger">{{ g.i18n.cancel_subscription }}</button>
-        </form>
-        <p>{{ g.i18n.credits_dont_expire }}</p>
 
+{% block title %}Cancel Subscription - SendFiles.Online{% endblock %}
+{% block description %}Cancel your SendFiles.Online subscription. Your credits will remain available and never expire.{% endblock %}
+{% block og_title %}Cancel Subscription - SendFiles.Online{% endblock %}
+{% block og_description %}Cancel your SendFiles.Online subscription.{% endblock %}
+{% block twitter_title %}Cancel Subscription - SendFiles.Online{% endblock %}
+{% block twitter_description %}Cancel your SendFiles.Online subscription.{% endblock %}
+{% block canonical_path %}/cancel/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://sendfiles.online/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Account",
+            "item": "https://sendfiles.online/account/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Cancel Subscription",
+            "item": "https://sendfiles.online/cancel/"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/account/">Account</a></li>
+            <li><span class="current">Cancel Subscription</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h1 class="h3 mb-4">{{ g.i18n.cancel|default:"Cancel Subscription" }}</h1>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="h5">{{ g.i18n.cancelled_instantly|default:"Your subscription will be cancelled instantly" }}</h3>
+                    <p class="text-muted">{{ g.i18n.credits_dont_expire|default:"Your credits will never expire and remain available for use." }}</p>
+                    <form action="/cancel/" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger">{{ g.i18n.cancel_subscription|default:"Cancel Subscription" }}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<br><br><br><br>
 {% endblock %}

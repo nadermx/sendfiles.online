@@ -4,122 +4,124 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**SendFiles.Online** - A fast, simple file sharing platform competing with WeTransfer, Smash, and similar services.
+**SendFiles.Online** - A fast, simple file sharing platform built on DjangoBase. Competes with WeTransfer, Smash, and similar services.
+
+**Live site**: https://sendfiles.online
 
 **Key Features:**
-- Up to 10GB free transfers
-- No signup required
-- 14-day file retention
-- Optional password protection
-- Optional encryption (server-side or client-side E2E)
-- Industrial grayscale design
+- Up to 10GB free transfers (14-day retention)
+- No signup required for basic transfers
+- Optional password protection and encryption
+- Industrial grayscale design (Inter + JetBrains Mono fonts)
 
-**Live site**: https://sendfiles.online (when deployed)
-
-## Common Commands
+## Development Commands
 
 ```bash
-# Development
-source ../venv/bin/activate  # Shared venv with other sfo projects
+# Activate shared venv (from project root)
+source ../venv/bin/activate
+
+# Run development server
 python manage.py runserver
 
-# Database
-python manage.py migrate
+# Database migrations
 python manage.py makemigrations
+python manage.py migrate
 
-# Languages
+# Load translation strings
 python manage.py set_languages
-
-# Create admin user
-python manage.py createsuperuser
 ```
 
 ## Architecture
 
 ### Core Apps
 
-- **transfers/** - File transfer functionality (upload, download, share links)
-- **accounts/** - User authentication (from djangobase)
-- **finances/** - Payment processing (from djangobase)
-- **core/** - Static pages (pricing, about, contact)
+| App | Purpose |
+|-----|---------|
+| `transfers/` | File upload, download, share links |
+| `accounts/` | User auth (email-based, from DjangoBase) |
+| `finances/` | Payments (Stripe, PayPal, Square, Coinbase) |
+| `core/` | Static pages (pricing, about, contact) |
+| `translations/` | Database-driven i18n system |
 
-### Key Models
+### Key Models (transfers/)
 
-**Transfer** (`transfers/models.py`)
-- UUID primary key + 8-char short_id for URLs
-- Tracks files, expiration, password, encryption type
-- Status: uploading → ready → expired/deleted
-
-**TransferFile** (`transfers/models.py`)
-- Individual files within a transfer
-- Stores original name, stored name (UUID), size, mime type
-
-**DownloadEvent** (`transfers/models.py`)
-- Analytics for downloads
+- **Transfer** - UUID pk + 8-char `short_id` for URLs. Status flow: `uploading → ready → expired/deleted`
+- **TransferFile** - Individual files (original name, UUID stored name, size, mime type)
+- **DownloadEvent** - Download analytics
 
 ### API Endpoints
 
 ```
-POST /api/transfers/                    # Create new transfer
-POST /api/transfers/<uuid>/upload/      # Upload file to transfer
-POST /api/transfers/<uuid>/finalize/    # Finalize transfer, get share URL
+POST /api/transfers/                    # Create transfer
+POST /api/transfers/<uuid>/upload/      # Upload file
+POST /api/transfers/<uuid>/finalize/    # Finalize, get share URL
 ```
 
-### Download URLs
+### URL Routes
 
 ```
-/d/<short_id>/                          # Download page
-/d/<short_id>/file/<file_id>/           # Download single file
-/d/<short_id>/download/                 # Download all as ZIP
-/sent/<short_id>/                       # Success page after upload
+/d/<short_id>/                  # Download page
+/d/<short_id>/file/<file_id>/   # Single file download
+/d/<short_id>/download/         # Download all as ZIP
+/sent/<short_id>/               # Upload success page
 ```
 
 ### Configuration
 
-Settings split between:
 - `app/settings.py` - Django settings
-- `config.py` - Secrets, domain, payment keys (git-ignored)
+- `config.py` - Secrets, domain, payment keys (git-ignored, copy from `config_example.py`)
 
-Key config values in `config.py`:
+Key config values:
 ```python
-FILES_LIMIT = 10737418240  # 10GB default
-FREE_TIER_RETENTION = 14   # Days
+FILES_LIMIT = 10737418240       # 10GB
+FREE_TIER_RETENTION = 14        # Days
 ROOT_DOMAIN = 'https://sendfiles.online'
-FILES_API_DOMAIN = 'https://files.sendfiles.online'  # For chunked uploads (future)
 ```
 
 ### File Storage
 
-Files are stored in `/uploads/transfers/` with UUID-based names.
-Original filenames are preserved in the database.
+Files stored in `/uploads/transfers/` with UUID names. Original filenames preserved in database.
+
+### Translation System
+
+Database-driven (not Django i18n). Use in templates:
+```html
+{{ g.i18n.code_name|default:"Fallback text" }}
+```
+
+## Deployment
+
+**Server:** 147.182.208.66 (Ubuntu, Supervisor: `sendfiles`, Path: `/home/www/sendfiles/`)
+
+```bash
+cd ansible
+
+# Deploy code updates
+ansible -i servers all -m shell -a "cd /home/www/sendfiles && git pull" --become
+
+# Restart application
+ansible -i servers all -m shell -a "supervisorctl restart sendfiles" --become
+
+# Update nginx config
+ansible -i servers all -m template -a "src=files/nginx.conf.j2 dest=/etc/nginx/sites-available/sendfiles.conf" --become
+ansible -i servers all -m shell -a "nginx -t && systemctl reload nginx" --become
+
+# Check logs
+ansible -i servers all -m shell -a "tail -100 /var/log/sendfiles/sendfiles.err.log" --become
+
+# Full initial deployment (new server)
+ansible-playbook -i servers djangodeployubuntu20.yml
+```
 
 ## Design System
 
-Industrial grayscale palette:
 - Primary: #111111 (gray-900)
 - Background: #f5f5f5 (gray-50)
 - Borders: #d4d4d4 (gray-200)
 - No rounded corners (border-radius: 0)
-- Inter + JetBrains Mono fonts
-
-## Deployment
-
-```bash
-cd ansible
-ansible-playbook -i servers gitpull.yml
-ansible -i servers all -m shell -a "supervisorctl restart sendfiles" --become
-```
+- Fonts: Inter (body), JetBrains Mono (code/sizes)
 
 ## Related Projects
 
-- **sendfilesencrypted/** - The E2E encrypted version (sendfilesencrypted.com)
-- **files.sendfilesencrypted/** - Files API for sendfilesencrypted
-
-## Monetization Tiers (Planned)
-
-| Tier | Price | Size Limit | Retention |
-|------|-------|------------|-----------|
-| Free | $0 | 10GB | 14 days |
-| Pro | $8/mo | 50GB | 30 days |
-| Team | $20/mo | 100GB | 90 days |
-| Enterprise | Custom | Unlimited | 365 days |
+- **sfe/** (sendfilesencrypted.com) - E2E encrypted version
+- **sfe-files/** - Files API for SFE
