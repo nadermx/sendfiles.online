@@ -1,18 +1,79 @@
 {% extends 'base.html' %}
+
+{% block title %}About Us - SendFiles.Online{% endblock %}
+{% block description %}Learn about SendFiles.Online - a fast, simple file sharing platform. Our mission is to make sharing large files easy and accessible for everyone.{% endblock %}
+{% block og_title %}About Us - SendFiles.Online{% endblock %}
+{% block og_description %}Learn about SendFiles.Online and our mission to make file sharing simple.{% endblock %}
+{% block twitter_title %}About Us - SendFiles.Online{% endblock %}
+{% block twitter_description %}Learn about SendFiles.Online and our mission.{% endblock %}
+{% block canonical_path %}/about/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://sendfiles.online/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "About",
+            "item": "https://sendfiles.online/about/"
+        }
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About SendFiles.Online",
+    "description": "Learn about SendFiles.Online and our mission to make file sharing simple and accessible.",
+    "url": "https://sendfiles.online/about/"
+}
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><span class="current">About</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
-<div class="container hero-container">
-    <div class="row">
-        <div class="col-sm-8 offset-sm-2">
-            <div class="hero-description margin-less">
-                <h1>{{ g.i18n.about|default:"About Us" }}</h1>
-                <br>
-                <p>{{ g.i18n.about_intro|default:"Welcome to our platform." }}</p>
-                <p>{{ g.i18n.about_mission|default:"Our mission is to provide excellent service to our users." }}</p>
-                <p>{{ g.i18n.about_team|default:"We are a dedicated team working to improve your experience." }}</p>
-                <p>{{ g.i18n.about_contact|default:"Feel free to reach out if you have any questions." }}</p>
-            </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-center mb-4">{{ g.i18n.about|default:"About Us" }}</h1>
+
+            <p class="lead">{{ g.i18n.about_intro|default:"SendFiles.Online is a fast, simple way to share large files with anyone." }}</p>
+
+            <h3 class="mt-4">Our Mission</h3>
+            <p>{{ g.i18n.about_mission|default:"We believe sharing files should be simple, fast, and accessible to everyone. No complicated signups, no confusing interfaces - just drag, drop, and share." }}</p>
+
+            <h3 class="mt-4">What We Offer</h3>
+            <ul>
+                <li>Send files up to 10GB for free</li>
+                <li>No account required for basic transfers</li>
+                <li>14-day file storage included</li>
+                <li>Optional password protection</li>
+                <li>File encryption for sensitive documents</li>
+            </ul>
+
+            <h3 class="mt-4">Get in Touch</h3>
+            <p>{{ g.i18n.about_contact|default:"Have questions or feedback? We'd love to hear from you." }} <a href="/contact/">Contact us</a>.</p>
         </div>
     </div>
 </div>
-<br><br><br><br>
 {% endblock %}

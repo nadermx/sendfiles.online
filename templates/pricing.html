@@ -1,4 +1,79 @@
 {% extends 'base.html' %}
+
+{% block title %}Pricing - SendFiles.Online | File Sharing Plans{% endblock %}
+{% block description %}Choose the perfect SendFiles.Online plan. Free tier with 10GB transfers, or upgrade to Pro for larger files and longer storage. No hidden fees.{% endblock %}
+{% block og_title %}Pricing - SendFiles.Online{% endblock %}
+{% block og_description %}Choose the perfect file sharing plan. Free 10GB transfers or upgrade for more features.{% endblock %}
+{% block twitter_title %}Pricing - SendFiles.Online{% endblock %}
+{% block twitter_description %}Choose the perfect file sharing plan. Free 10GB transfers or upgrade for more.{% endblock %}
+{% block canonical_path %}/pricing/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://sendfiles.online/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Pricing",
+            "item": "https://sendfiles.online/pricing/"
+        }
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What's included in the free plan?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The free plan includes up to 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I cancel my subscription anytime?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, you can change or cancel your subscription at any time. We offer a 30-day money-back guarantee on all paid plans."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Do credits expire?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, your credits never expire. Use them whenever you need them."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><span class="current">Pricing</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
     <div class="container text-center">
         <h1 class="page-header">{{ g.i18n.pricing|default:"Pricing" }}</h1>
@@ -51,4 +126,27 @@
             <strong>{{ g.i18n.fair|default:"Fair" }}:</strong> {{ g.i18n.credits_never_expire|default:"Credits never expire" | safe }}
         </p>
     </form>
+
+    <!-- FAQ Section -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="faq-section">
+                    <h2>Pricing FAQ</h2>
+                    <div class="faq-item">
+                        <div class="faq-question">What's included in the free plan?</div>
+                        <div class="faq-answer">The free plan includes up to 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I cancel my subscription anytime?</div>
+                        <div class="faq-answer">Yes, you can change or cancel your subscription at any time. We offer a 30-day money-back guarantee on all paid plans.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Do credits expire?</div>
+                        <div class="faq-answer">No, your credits never expire. Use them whenever you need them.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

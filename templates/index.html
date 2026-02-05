@@ -1,6 +1,87 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}SendFiles.Online - Send Large Files Free | Up to 10GB{% endblock %}
+{% block description %}Send large files up to 10GB for free. No signup required. Fast, simple, secure file sharing with 14-day storage. The easiest way to share files online.{% endblock %}
+{% block og_title %}SendFiles.Online - Send Large Files Free | Up to 10GB{% endblock %}
+{% block og_description %}Send large files up to 10GB for free. No signup required. Fast, simple, secure file sharing.{% endblock %}
+{% block twitter_title %}SendFiles.Online - Send Large Files Free{% endblock %}
+{% block twitter_description %}Send large files up to 10GB for free. No signup required. Fast, secure file sharing.{% endblock %}
+{% block canonical_path %}/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SendFiles.Online",
+    "url": "https://sendfiles.online",
+    "applicationCategory": "FileTransfer",
+    "operatingSystem": "Any",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": [
+        "Send files up to 10GB",
+        "No signup required",
+        "14-day file storage",
+        "Password protection",
+        "File encryption"
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "How large of files can I send?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can send files up to 10GB for free with SendFiles.Online. No signup is required for basic transfers."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How long are files stored?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Free transfers are stored for 14 days. Premium plans offer extended storage up to 365 days."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Do I need to create an account?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, you can send files without creating an account. Simply drag and drop your files and share the link."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Are my files secure?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. All transfers use HTTPS encryption. You can also add password protection and enable file encryption for additional security."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How do recipients download files?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Recipients receive a unique download link. They can download individual files or all files as a ZIP archive with one click."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="hero">
     <div class="container">
@@ -78,6 +159,31 @@
                 <div class="d-flex justify-content-between mt-2">
                     <span id="upload-speed" class="font-mono small text-muted">0 MB/s</span>
                     <span id="upload-eta" class="font-mono small text-muted">ETA: calculating...</span>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-item">
+                    <div class="faq-question">How large of files can I send?</div>
+                    <div class="faq-answer">You can send files up to 10GB for free with SendFiles.Online. No signup is required for basic transfers.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How long are files stored?</div>
+                    <div class="faq-answer">Free transfers are stored for 14 days. Premium plans offer extended storage up to 365 days.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Do I need to create an account?</div>
+                    <div class="faq-answer">No, you can send files without creating an account. Simply drag and drop your files and share the link.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Are my files secure?</div>
+                    <div class="faq-answer">Yes. All transfers use HTTPS encryption. You can also add password protection and enable file encryption for additional security.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How do recipients download files?</div>
+                    <div class="faq-answer">Recipients receive a unique download link. They can download individual files or all files as a ZIP archive with one click.</div>
                 </div>
             </div>
         </div>

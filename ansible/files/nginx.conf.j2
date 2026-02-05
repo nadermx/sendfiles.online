@@ -1,17 +1,37 @@
 server_tokens off;
 
-# Redirect www to non-www
+# Redirect HTTP to HTTPS
 server {
     listen [::]:80;
     listen 80;
-    server_name www.{{ domain }};
-    return 301 $scheme://{{ domain }}$request_uri;
+    server_name {{ domain }} www.{{ domain }};
+    return 301 https://{{ domain }}$request_uri;
 }
 
+# Redirect www to non-www (HTTPS)
 server {
-    listen [::]:80;
-    listen 80;
+    listen [::]:443 ssl http2;
+    listen 443 ssl http2;
+    server_name www.{{ domain }};
+
+    ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    return 301 https://{{ domain }}$request_uri;
+}
+
+# Main HTTPS server
+server {
+    listen [::]:443 ssl http2;
+    listen 443 ssl http2;
     server_name {{ domain }};
+
+    ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     client_max_body_size 10000m;
     gzip_disable "msie6";
@@ -66,6 +86,7 @@ server {
     location / {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header Host $host;
         proxy_set_header X-NginX-Proxy false;
         real_ip_header X-Real-IP;
@@ -81,7 +102,3 @@ server {
         access_log off;
     }
 }
-
-
-
-
