@@ -2,11 +2,16 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import login, logout
 from django.utils import timezone
+from django.http import Http404
 
 from accounts.models import CustomUser
 from accounts.views import GlobalVars
 from app.utils import Utils
 from contact_messages.models.message import Message
+from core.platforms import (
+    get_platform, get_all_platforms, get_platforms_by_category,
+    get_related_platforms, generate_faqs, PLATFORM_CATEGORIES
+)
 import config
 
 
@@ -550,5 +555,61 @@ class DeleteAccountPage(View):
                 'page': 'deleted',
                 'g': settings,
                 'errors': errors
+            }
+        )
+
+
+class PlatformIndexPage(View):
+    """Index page listing all platforms for sending large files."""
+
+    def get(self, request):
+        settings = GlobalVars.get_globals(request)
+        platforms_by_category = get_platforms_by_category()
+
+        return render(
+            request,
+            'platforms/index.html',
+            {
+                'title': f"Send Large Files on Any Platform | {config.PROJECT_NAME}",
+                'description': 'Learn how to send large files on WhatsApp, Instagram, Facebook, Gmail, Slack, Discord, and 50+ other platforms. Free transfers up to 10GB.',
+                'page': 'platforms',
+                'g': settings,
+                'platforms_by_category': platforms_by_category,
+                'categories': PLATFORM_CATEGORIES,
+            }
+        )
+
+
+class PlatformGuidePage(View):
+    """Individual platform guide page."""
+
+    def get(self, request, platform_slug):
+        settings = GlobalVars.get_globals(request)
+        platform = get_platform(platform_slug)
+
+        if not platform or not platform.get('is_active', True):
+            raise Http404("Platform not found")
+
+        # Generate dynamic content
+        faqs = generate_faqs(platform)
+        related = get_related_platforms(platform_slug, limit=6)
+
+        # SEO metadata
+        title = f"How to Send Large Files on {platform['name']} | {config.PROJECT_NAME}"
+        description = f"Send files larger than {platform['file_limit']} on {platform['name']}. Free transfers up to 10GB. No signup required. Share the download link and your recipient downloads instantly."
+
+        return render(
+            request,
+            'platforms/guide.html',
+            {
+                'title': title,
+                'description': description,
+                'page': 'platform-guide',
+                'g': settings,
+                'platform': platform,
+                'platform_slug': platform_slug,
+                'faqs': faqs,
+                'related_platforms': related,
+                'categories': PLATFORM_CATEGORIES,
             }
         )

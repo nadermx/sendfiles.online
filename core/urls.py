@@ -21,4 +21,8 @@ urlpatterns = [
     path('success/', views.SuccessPage.as_view(), name='success'),
     path('cancel/', views.CancelSubscriptionPage.as_view(), name='cancel'),
     path('delete-account/', views.DeleteAccountPage.as_view(), name='delete'),
+
+    # Platform guides for SEO (how to send large files on X)
+    path('send-large-files/', views.PlatformIndexPage.as_view(), name='platform-index'),
+    path('send-large-files/<slug:platform_slug>/', views.PlatformGuidePage.as_view(), name='platform-guide'),
 ]

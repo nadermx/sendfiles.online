@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block title %}How to Send Large Files on {{ platform.name }} ({{ platform.file_limit }}+ Bypass) | SendFiles.Online{% endblock %}
+{% block description %}Send files larger than {{ platform.file_limit }} on {{ platform.name }}. Free transfers up to 10GB with SendFiles.Online. No signup required. Share the download link and your recipient downloads instantly.{% endblock %}
+{% block og_title %}How to Send Large Files on {{ platform.name }} | SendFiles.Online{% endblock %}
+{% block og_description %}Bypass {{ platform.name }}'s {{ platform.file_limit }} file limit. Send up to 10GB free with SendFiles.Online.{% endblock %}
+{% block twitter_title %}How to Send Large Files on {{ platform.name }} | SendFiles.Online{% endblock %}
+{% block twitter_description %}Bypass {{ platform.name }}'s {{ platform.file_limit }} file limit. Send up to 10GB free.{% endblock %}
+{% block canonical_path %}/send-large-files/{{ platform_slug }}/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://sendfiles.online/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Send Large Files",
+            "item": "https://sendfiles.online/send-large-files/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{ platform.name }}",
+            "item": "https://sendfiles.online/send-large-files/{{ platform_slug }}/"
+        }
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Send Large Files on {{ platform.name }}",
+    "description": "Learn how to send files larger than {{ platform.file_limit }} on {{ platform.name }} using SendFiles.Online.",
+    "image": "https://sendfiles.online/static/img/og-image.png",
+    "totalTime": "PT2M",
+    "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "USD",
+        "value": "0"
+    },
+    "tool": {
+        "@type": "HowToTool",
+        "name": "SendFiles.Online"
+    },
+    "step": [
+        {
+            "@type": "HowToStep",
+            "name": "Go to SendFiles.Online",
+            "text": "Open sendfiles.online in your web browser. No account or signup required.",
+            "url": "https://sendfiles.online/",
+            "position": 1
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Upload your files",
+            "text": "Drag and drop your files onto the upload area, or click to browse. You can upload files up to 10GB for free.",
+            "position": 2
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Copy the download link",
+            "text": "Once upload completes, copy the generated download link. Optionally add password protection.",
+            "position": 3
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Share the link on {{ platform.name }}",
+            "text": "{{ platform.share_instruction }}",
+            "position": 4
+        }
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {% for faq in faqs %}
+        {
+            "@type": "Question",
+            "name": "{{ faq.question }}",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "{{ faq.answer }}"
+            }
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'platform-index' %}">Send Large Files</a></li>
+            <li><span class="current">{{ platform.name }}</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Hero -->
+            <div class="mb-5">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="platform-badge me-3" style="background: {{ platform.color }}; color: {% if platform.text_color %}{{ platform.text_color }}{% else %}#fff{% endif %}; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fab fa-{{ platform.icon }}" style="font-size: 1.8rem;"></i>
+                    </div>
+                    <div>
+                        <h1 class="h2 mb-0">How to Send Large Files on {{ platform.name }}</h1>
+                        <p class="text-muted mb-0">Bypass the {{ platform.file_limit }} limit</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Problem -->
+            <section class="mb-5">
+                <h2 class="h4 mb-3">The Problem: {{ platform.name }}'s File Size Limit</h2>
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <p class="mb-2">
+                            <strong>{{ platform.name }} limits file sharing to {{ platform.file_limit }}</strong>{% if platform.file_limit_note %} ({{ platform.file_limit_note }}){% endif %}.
+                        </p>
+                        <p class="mb-0 text-muted">
+                            With {{ platform.users }} users, {{ platform.name }} is one of the most popular platforms for communication. But when you need to share large files like videos, high-resolution photos, presentations, or project files, you hit that frustrating size limit.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Solution -->
+            <section class="mb-5">
+                <h2 class="h4 mb-3">The Solution: Use SendFiles.Online</h2>
+                <p>
+                    Instead of trying to compress or split your files, use SendFiles.Online to share files up to <strong>10GB for free</strong>. You upload the files to our server, get a download link, and share that link on {{ platform.name }}. Your recipient clicks the link and downloads directly.
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>10GB free transfers</strong> - 400x larger than {{ platform.name }}'s {{ platform.file_limit }} limit</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>No account required</strong> - for you or your recipient</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>14-day availability</strong> - plenty of time to download</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>Password protection</strong> - optional extra security</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>Works on any device</strong> - desktop, mobile, tablet</li>
+                </ul>
+            </section>
+
+            <!-- How To Steps -->
+            <section class="mb-5">
+                <h2 class="h4 mb-4">Step-by-Step: Send Large Files on {{ platform.name }}</h2>
+
+                <div class="step-card mb-4">
+                    <div class="d-flex">
+                        <div class="step-number me-3">1</div>
+                        <div>
+                            <h3 class="h5 mb-2">Go to SendFiles.Online</h3>
+                            <p class="text-muted mb-0">
+                                Open <a href="/" class="text-primary">sendfiles.online</a> in any web browser. No signup or account creation needed - just open the page and you're ready to upload.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card mb-4">
+                    <div class="d-flex">
+                        <div class="step-number me-3">2</div>
+                        <div>
+                            <h3 class="h5 mb-2">Upload Your Files</h3>
+                            <p class="text-muted mb-0">
+                                Drag and drop your files onto the upload area, or click to browse and select files. You can upload multiple files at once, up to 10GB total for free.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card mb-4">
+                    <div class="d-flex">
+                        <div class="step-number me-3">3</div>
+                        <div>
+                            <h3 class="h5 mb-2">Copy Your Download Link</h3>
+                            <p class="text-muted mb-0">
+                                Once upload completes, you'll get a unique download link. Click "Copy" to copy it to your clipboard. You can also add password protection if your files are sensitive.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card mb-4" style="border-left-color: {{ platform.color }} !important;">
+                    <div class="d-flex">
+                        <div class="step-number me-3" style="background: {{ platform.color }}; color: {% if platform.text_color %}{{ platform.text_color }}{% else %}#fff{% endif %};">4</div>
+                        <div>
+                            <h3 class="h5 mb-2">Share the Link on {{ platform.name }}</h3>
+                            <p class="text-muted mb-0">
+                                {{ platform.share_instruction }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="/" class="btn btn-primary btn-lg">
+                        <i class="fas fa-upload me-2"></i> Upload Files Now
+                    </a>
+                </div>
+            </section>
+
+            <!-- FAQs -->
+            <section class="mb-5">
+                <h2 class="h4 mb-4">Frequently Asked Questions</h2>
+                <div class="accordion" id="faqAccordion">
+                    {% for faq in faqs %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="faq-heading-{{ forloop.counter }}">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq-{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+                                {{ faq.question }}
+                            </button>
+                        </h3>
+                        <div id="faq-{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                {{ faq.answer }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Why SendFiles.Online -->
+            <section class="mb-5">
+                <h2 class="h4 mb-3">Why Use SendFiles.Online for {{ platform.name }}?</h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="h6"><i class="fas fa-rocket text-primary me-2"></i> Fast Uploads</h3>
+                                <p class="small text-muted mb-0">Our servers are optimized for speed. Large files upload quickly so you can share faster.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="h6"><i class="fas fa-lock text-primary me-2"></i> Secure Transfers</h3>
+                                <p class="small text-muted mb-0">Files are transferred over HTTPS. Add password protection for extra security.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="h6"><i class="fas fa-user-slash text-primary me-2"></i> No Account Needed</h3>
+                                <p class="small text-muted mb-0">You don't need to sign up. Neither does your recipient. Just upload, share, download.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="h6"><i class="fas fa-mobile-alt text-primary me-2"></i> Works Everywhere</h3>
+                                <p class="small text-muted mb-0">Works on any device with a browser. Desktop, mobile, tablet - any operating system.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Quick Upload CTA -->
+            <div class="card mb-4 sticky-top" style="top: 20px;">
+                <div class="card-body text-center">
+                    <h3 class="h5 mb-3">Ready to Send Large Files?</h3>
+                    <p class="small text-muted mb-3">Upload up to 10GB free. No signup required.</p>
+                    <a href="/" class="btn btn-primary btn-lg w-100 mb-3">
+                        <i class="fas fa-upload me-2"></i> Upload Now
+                    </a>
+                    <div class="d-flex justify-content-around text-muted small">
+                        <span><i class="fas fa-check me-1"></i> 10GB Free</span>
+                        <span><i class="fas fa-check me-1"></i> No Signup</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Platform Info Card -->
+            <div class="card mb-4">
+                <div class="card-header" style="background: {{ platform.color }}; color: {% if platform.text_color %}{{ platform.text_color }}{% else %}#fff{% endif %};">
+                    <i class="fab fa-{{ platform.icon }} me-2"></i> {{ platform.name }} File Limits
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr>
+                            <td class="text-muted">File Size Limit</td>
+                            <td class="text-end"><strong>{{ platform.file_limit }}</strong></td>
+                        </tr>
+                        {% if platform.file_limit_note %}
+                        <tr>
+                            <td class="text-muted">Note</td>
+                            <td class="text-end small">{{ platform.file_limit_note }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td class="text-muted">Monthly Users</td>
+                            <td class="text-end">{{ platform.users }}</td>
+                        </tr>
+                        <tr class="table-success">
+                            <td class="text-muted">With SendFiles</td>
+                            <td class="text-end"><strong>10GB</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Related Platforms -->
+            {% if related_platforms %}
+            <div class="card">
+                <div class="card-header">
+                    <strong>Other Platforms</strong>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for related in related_platforms %}
+                    <a href="{% url 'platform-guide' platform_slug=related.slug %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="fab fa-{{ related.icon }} me-2" style="color: {{ related.color }};"></i>
+                            {{ related.name }}
+                        </span>
+                        <small class="text-muted">{{ related.file_limit }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'platform-index' %}" class="small">View All Platforms</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--gray-900);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+.step-card {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-left: 4px solid var(--gray-900);
+}
+.platform-badge {
+    flex-shrink: 0;
+}
+.accordion-button:not(.collapsed) {
+    background-color: #f8f9fa;
+    color: var(--gray-900);
+}
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--gray-300);
+}
+</style>
+{% endblock %}
