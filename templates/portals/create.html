@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Create Upload Portal - SendFiles.Online{% endblock %}
+{% block description %}Create a custom upload portal to receive files from others.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'portal_list' %}">Upload Portals</a></li>
+            <li><span class="current">Create</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h1 class="mb-4">Create Upload Portal</h1>
+
+            {% if errors %}
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Portal Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ name|default:'' }}" required placeholder="e.g., Client File Uploads">
+                    <div class="form-text">Give your portal a descriptive name.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="slug" class="form-label">URL</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="border-radius: 0;">sendfiles.online/p/</span>
+                        <input type="text" class="form-control" id="slug" name="slug" value="{{ slug|default:'' }}" placeholder="my-portal" pattern="[a-z0-9-]+">
+                    </div>
+                    <div class="form-text">Leave blank to auto-generate from name. Only lowercase letters, numbers, and hyphens.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description (optional)</label>
+                    <textarea class="form-control" id="description" name="description" rows="2" placeholder="What is this portal for?">{{ description|default:'' }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="welcome_message" class="form-label">Welcome Message (optional)</label>
+                    <textarea class="form-control" id="welcome_message" name="welcome_message" rows="3" placeholder="Message shown to uploaders on the portal page">{{ welcome_message|default:'' }}</textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Create Portal
+                    </button>
+                    <a href="{% url 'portal_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

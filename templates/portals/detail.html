@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}{{ portal.name }} - Upload Portal - SendFiles.Online{% endblock %}
+{% block description %}Manage your upload portal and view received files.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'portal_list' %}">Upload Portals</a></li>
+            <li><span class="current">{{ portal.name }}</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h1 class="mb-1">{{ portal.name }}</h1>
+                    <span class="badge {% if portal.is_active %}bg-success{% else %}bg-secondary{% endif %} me-2">
+                        {% if portal.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                    <small class="text-muted">Created {{ portal.created_at|date:"M d, Y" }}</small>
+                </div>
+                <div>
+                    <a href="{% url 'portal_edit' slug=portal.slug %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Uploads -->
+            <h2 class="h5 mb-3">Recent Uploads</h2>
+            {% if uploads %}
+            <div class="list-group mb-4">
+                {% for upload in uploads %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="d-flex align-items-center mb-1">
+                                <strong>{{ upload.uploader_email|default:upload.uploader_name|default:"Anonymous" }}</strong>
+                                <span class="badge bg-light text-dark ms-2">{{ upload.transfer.file_count }} file{{ upload.transfer.file_count|pluralize }}</span>
+                            </div>
+                            {% if upload.message %}
+                            <p class="text-muted small mb-1">"{{ upload.message|truncatewords:15 }}"</p>
+                            {% endif %}
+                            <small class="text-muted">{{ upload.created_at|date:"M d, Y H:i" }}</small>
+                        </div>
+                        <a href="{% url 'download_page' short_id=upload.transfer.short_id %}" class="btn btn-sm btn-outline-primary">
+                            View Files
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card mb-4">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                    <p class="text-muted mb-0">No uploads yet. Share your portal link to start receiving files.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Share Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Share Your Portal</strong>
+                </div>
+                <div class="card-body">
+                    <label class="form-label small text-muted">Portal URL:</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control font-mono small" id="portal-url" value="{{ portal.public_url }}" readonly>
+                        <button class="btn btn-outline-primary" onclick="copyPortalUrl()">Copy</button>
+                    </div>
+                    <a href="{{ portal.public_url }}" class="btn btn-primary w-100" target="_blank">
+                        <i class="fas fa-external-link-alt me-2"></i> Open Portal
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Statistics</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 text-center">
+                        <div class="col-4">
+                            <div class="h4 mb-0 font-mono">{{ portal.total_uploads }}</div>
+                            <small class="text-muted">Uploads</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h4 mb-0 font-mono">{{ portal.total_files }}</div>
+                            <small class="text-muted">Files</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h4 mb-0 font-mono">
+                                {% load humanize %}
+                                {% widthratio portal.total_bytes 1073741824 1 %}GB
+                            </div>
+                            <small class="text-muted">Data</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Summary -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <strong>Settings</strong>
+                    <a href="{% url 'portal_edit' slug=portal.slug %}" class="small">Edit</a>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Require email</span>
+                        <span>{% if portal.require_email %}<i class="fas fa-check text-success"></i>{% else %}<i class="fas fa-times text-muted"></i>{% endif %}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Require name</span>
+                        <span>{% if portal.require_name %}<i class="fas fa-check text-success"></i>{% else %}<i class="fas fa-times text-muted"></i>{% endif %}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Notifications</span>
+                        <span>{% if portal.notify_on_upload %}<i class="fas fa-check text-success"></i>{% else %}<i class="fas fa-times text-muted"></i>{% endif %}</span>
+                    </li>
+                    {% if portal.allowed_extensions %}
+                    <li class="list-group-item">
+                        <span class="text-muted small">Allowed: {{ portal.allowed_extensions }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyPortalUrl() {
+    const input = document.getElementById('portal-url');
+    input.select();
+    document.execCommand('copy');
+    alert('Portal URL copied!');
+}
+</script>
+{% endblock %}

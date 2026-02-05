@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Branding Settings - SendFiles.Online{% endblock %}
+{% block description %}Customize your SendFiles experience with your own logo, colors, and branding.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'account' %}">Account</a></li>
+            <li><span class="current">Branding</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="mb-4">Branding Settings</h1>
+
+            {% if not can_use_branding %}
+            <div class="alert alert-warning">
+                <strong>Pro Feature</strong> - Custom branding is available for Pro and Business plans.
+                <a href="{% url 'pricing' %}" class="alert-link">Upgrade now</a> to customize your transfers.
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Company Info -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Company Information</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="company_name" class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name"
+                                   value="{{ branding.company_name }}" {% if not can_use_branding %}disabled{% endif %}
+                                   placeholder="Your Company Name">
+                            <div class="form-text">Displayed in emails and download pages.</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label for="logo_url" class="form-label">Logo URL</label>
+                            <input type="url" class="form-control" id="logo_url" name="logo_url"
+                                   value="{{ branding.logo_url }}" {% if not can_use_branding %}disabled{% endif %}
+                                   placeholder="https://example.com/logo.png">
+                            <div class="form-text">URL to your logo image (recommended: 200x50px).</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colors -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Brand Colors</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="primary_color" class="form-label">Primary Color</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color" id="primary_color_picker"
+                                           value="{{ branding.primary_color }}" {% if not can_use_branding %}disabled{% endif %}
+                                           onchange="document.getElementById('primary_color').value = this.value">
+                                    <input type="text" class="form-control font-mono" id="primary_color" name="primary_color"
+                                           value="{{ branding.primary_color }}" {% if not can_use_branding %}disabled{% endif %}
+                                           pattern="^#[0-9A-Fa-f]{6}$">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="secondary_color" class="form-label">Secondary Color</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color" id="secondary_color_picker"
+                                           value="{{ branding.secondary_color }}" {% if not can_use_branding %}disabled{% endif %}
+                                           onchange="document.getElementById('secondary_color').value = this.value">
+                                    <input type="text" class="form-control font-mono" id="secondary_color" name="secondary_color"
+                                           value="{{ branding.secondary_color }}" {% if not can_use_branding %}disabled{% endif %}
+                                           pattern="^#[0-9A-Fa-f]{6}$">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="text_color" class="form-label">Text Color</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color" id="text_color_picker"
+                                           value="{{ branding.text_color }}" {% if not can_use_branding %}disabled{% endif %}
+                                           onchange="document.getElementById('text_color').value = this.value">
+                                    <input type="text" class="form-control font-mono" id="text_color" name="text_color"
+                                           value="{{ branding.text_color }}" {% if not can_use_branding %}disabled{% endif %}
+                                           pattern="^#[0-9A-Fa-f]{6}$">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Background -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Background Image</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-0">
+                            <label for="background_url" class="form-label">Background Image URL</label>
+                            <input type="url" class="form-control" id="background_url" name="background_url"
+                                   value="{{ branding.background_url }}" {% if not can_use_branding %}disabled{% endif %}
+                                   placeholder="https://example.com/background.jpg">
+                            <div class="form-text">Used on download pages. Recommended: high resolution (1920x1080+).</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branding Options -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Branding Options</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="hide_sendfiles_branding" name="hide_sendfiles_branding"
+                                   {% if branding.hide_sendfiles_branding %}checked{% endif %} {% if not can_use_branding %}disabled{% endif %}>
+                            <label class="form-check-label" for="hide_sendfiles_branding">
+                                Hide "Powered by SendFiles" branding
+                            </label>
+                            <div class="form-text">Remove SendFiles branding from download pages and emails.</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label for="custom_footer_text" class="form-label">Custom Footer Text</label>
+                            <textarea class="form-control" id="custom_footer_text" name="custom_footer_text" rows="2"
+                                      {% if not can_use_branding %}disabled{% endif %}
+                                      placeholder="Custom text to display in the footer of download pages">{{ branding.custom_footer_text }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Branding -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Email Branding</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="email_logo_url" class="form-label">Email Logo URL</label>
+                            <input type="url" class="form-control" id="email_logo_url" name="email_logo_url"
+                                   value="{{ branding.email_logo_url }}" {% if not can_use_branding %}disabled{% endif %}
+                                   placeholder="https://example.com/email-logo.png">
+                            <div class="form-text">Logo shown in notification emails.</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label for="email_footer_text" class="form-label">Email Footer Text</label>
+                            <textarea class="form-control" id="email_footer_text" name="email_footer_text" rows="2"
+                                      {% if not can_use_branding %}disabled{% endif %}
+                                      placeholder="Custom text to display in the footer of emails">{{ branding.email_footer_text }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                {% if can_use_branding %}
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i> Save Changes
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="resetToDefaults()">
+                        Reset to Defaults
+                    </button>
+                </div>
+                {% else %}
+                <div class="text-center">
+                    <a href="{% url 'pricing' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-arrow-up me-2"></i> Upgrade to Pro
+                    </a>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function resetToDefaults() {
+    if (!confirm('Are you sure you want to reset all branding settings to defaults?')) return;
+
+    document.getElementById('logo_url').value = '';
+    document.getElementById('favicon_url').value = '';
+    document.getElementById('background_url').value = '';
+    document.getElementById('primary_color').value = '#111111';
+    document.getElementById('primary_color_picker').value = '#111111';
+    document.getElementById('secondary_color').value = '#f5f5f5';
+    document.getElementById('secondary_color_picker').value = '#f5f5f5';
+    document.getElementById('text_color').value = '#111111';
+    document.getElementById('text_color_picker').value = '#111111';
+    document.getElementById('company_name').value = '';
+    document.getElementById('hide_sendfiles_branding').checked = false;
+    document.getElementById('custom_footer_text').value = '';
+    document.getElementById('email_logo_url').value = '';
+    document.getElementById('email_footer_text').value = '';
+}
+</script>
+{% endblock %}

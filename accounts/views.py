@@ -136,3 +136,60 @@ class CancelSubscription(APIView):
             return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'status': True})
+
+
+# ============================================================================
+# BRANDING SETTINGS
+# ============================================================================
+
+from django.shortcuts import render, redirect
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.models import UserBranding
+
+
+class BrandingSettingsView(LoginRequiredMixin, View):
+    """View and edit branding settings."""
+
+    def get(self, request):
+        g = GlobalVars.get_globals(request)
+        branding = UserBranding.get_or_create_for_user(request.user)
+
+        # Check if user has Pro/Business plan
+        can_use_branding = request.user.is_plan_active
+
+        return render(request, 'accounts/branding.html', {
+            'g': g,
+            'branding': branding,
+            'can_use_branding': can_use_branding,
+        })
+
+    def post(self, request):
+        g = GlobalVars.get_globals(request)
+        branding = UserBranding.get_or_create_for_user(request.user)
+
+        # Check if user has Pro/Business plan
+        if not request.user.is_plan_active:
+            return redirect('branding_settings')
+
+        # Update branding settings
+        branding.logo_url = request.POST.get('logo_url', '').strip()
+        branding.favicon_url = request.POST.get('favicon_url', '').strip()
+        branding.background_url = request.POST.get('background_url', '').strip()
+        branding.primary_color = request.POST.get('primary_color', '#111111').strip()
+        branding.secondary_color = request.POST.get('secondary_color', '#f5f5f5').strip()
+        branding.text_color = request.POST.get('text_color', '#111111').strip()
+        branding.company_name = request.POST.get('company_name', '').strip()
+        branding.hide_sendfiles_branding = request.POST.get('hide_sendfiles_branding') == 'on'
+        branding.custom_footer_text = request.POST.get('custom_footer_text', '').strip()
+        branding.email_logo_url = request.POST.get('email_logo_url', '').strip()
+        branding.email_footer_text = request.POST.get('email_footer_text', '').strip()
+
+        branding.save()
+
+        return render(request, 'accounts/branding.html', {
+            'g': g,
+            'branding': branding,
+            'can_use_branding': True,
+            'success': 'Branding settings saved successfully.',
+        })

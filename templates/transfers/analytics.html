@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - SendFiles.Online{% endblock %}
+{% block description %}View your transfer statistics and download analytics.{% endblock %}
+
+{% block extra_head %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><span class="current">Analytics</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Analytics Dashboard</h1>
+        <div>
+            <select class="form-select" onchange="window.location.href='?days=' + this.value">
+                <option value="7" {% if selected_days == 7 %}selected{% endif %}>Last 7 days</option>
+                <option value="30" {% if selected_days == 30 %}selected{% endif %}>Last 30 days</option>
+                <option value="90" {% if selected_days == 90 %}selected{% endif %}>Last 90 days</option>
+                <option value="365" {% if selected_days == 365 %}selected{% endif %}>Last year</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="h2 mb-0 font-mono">{{ analytics.total_transfers }}</div>
+                    <small class="text-muted">Transfers</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="h2 mb-0 font-mono">{{ analytics.total_files }}</div>
+                    <small class="text-muted">Files Sent</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="h2 mb-0 font-mono">{{ analytics.total_bytes_formatted }}</div>
+                    <small class="text-muted">Data Transferred</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="h2 mb-0 font-mono">{{ analytics.total_downloads }}</div>
+                    <small class="text-muted">Downloads</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Transfers & Downloads Over Time</strong>
+                </div>
+                <div class="card-body">
+                    <canvas id="activityChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <strong>Activity by Hour</strong>
+                </div>
+                <div class="card-body">
+                    <canvas id="hourlyChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Transfers -->
+    {% if analytics.top_transfers %}
+    <div class="card">
+        <div class="card-header">
+            <strong>Most Downloaded Transfers</strong>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for transfer in analytics.top_transfers %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ transfer.title|default:transfer.short_id }}</strong>
+                    <small class="text-muted ms-2">{{ transfer.file_count }} file{{ transfer.file_count|pluralize }} ({{ transfer.format_size }})</small>
+                </div>
+                <div>
+                    <span class="badge bg-primary font-mono">{{ transfer.download_count }} downloads</span>
+                    <a href="{% url 'transfer_analytics' short_id=transfer.short_id %}" class="btn btn-sm btn-outline-secondary ms-2">
+                        <i class="fas fa-chart-line"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Activity Chart (Transfers & Downloads)
+const transfersData = {{ transfers_chart_data|safe }};
+const downloadsData = {{ downloads_chart_data|safe }};
+
+const transferDates = transfersData.map(d => d.date);
+const transferCounts = transfersData.map(d => d.count);
+const downloadDates = downloadsData.map(d => d.date);
+const downloadCounts = downloadsData.map(d => d.count);
+
+// Merge dates and create aligned data
+const allDates = [...new Set([...transferDates, ...downloadDates])].sort();
+
+const activityCtx = document.getElementById('activityChart').getContext('2d');
+new Chart(activityCtx, {
+    type: 'line',
+    data: {
+        labels: allDates.map(d => new Date(d).toLocaleDateString()),
+        datasets: [
+            {
+                label: 'Transfers',
+                data: allDates.map(date => {
+                    const item = transfersData.find(d => d.date === date);
+                    return item ? item.count : 0;
+                }),
+                borderColor: '#111111',
+                backgroundColor: 'rgba(17, 17, 17, 0.1)',
+                tension: 0.3,
+                fill: true,
+            },
+            {
+                label: 'Downloads',
+                data: allDates.map(date => {
+                    const item = downloadsData.find(d => d.date === date);
+                    return item ? item.count : 0;
+                }),
+                borderColor: '#666666',
+                backgroundColor: 'rgba(102, 102, 102, 0.1)',
+                tension: 0.3,
+                fill: true,
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+// Hourly Activity Chart
+const hourlyData = {{ hourly_chart_data|safe }};
+const hours = Array.from({length: 24}, (_, i) => i);
+const hourlyCounts = hours.map(h => {
+    const item = hourlyData.find(d => d.hour === h);
+    return item ? item.count : 0;
+});
+
+const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+new Chart(hourlyCtx, {
+    type: 'bar',
+    data: {
+        labels: hours.map(h => `${h}:00`),
+        datasets: [{
+            label: 'Downloads',
+            data: hourlyCounts,
+            backgroundColor: '#111111',
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

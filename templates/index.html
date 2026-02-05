@@ -109,16 +109,78 @@
                 <div id="files-container"></div>
             </div>
 
-            <!-- Options -->
-            <div id="options-section" class="options-row" style="display: none;">
-                <label class="option-checkbox">
-                    <input type="checkbox" id="password-option">
-                    Password protect
-                </label>
-                <label class="option-checkbox">
-                    <input type="checkbox" id="encrypt-option">
-                    Encrypt files
-                </label>
+            <!-- Transfer Options -->
+            <div id="options-section" style="display: none;">
+                <!-- Expiration & Limits Row -->
+                <div class="options-grid mb-3">
+                    <div class="option-group">
+                        <label class="option-label">Expires after</label>
+                        <select id="expiration-select" class="form-select form-select-sm">
+                            <option value="1">1 day</option>
+                            <option value="3">3 days</option>
+                            <option value="7" selected>7 days</option>
+                            <option value="14">14 days (Pro)</option>
+                            <option value="30">30 days (Pro)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label class="option-label">Download limit</label>
+                        <select id="download-limit-select" class="form-select form-select-sm">
+                            <option value="">Unlimited</option>
+                            <option value="1">1 download</option>
+                            <option value="5">5 downloads</option>
+                            <option value="10">10 downloads</option>
+                            <option value="25">25 downloads</option>
+                            <option value="50">50 downloads</option>
+                            <option value="100">100 downloads</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Checkboxes Row -->
+                <div class="options-row mb-3">
+                    <label class="option-checkbox">
+                        <input type="checkbox" id="password-option">
+                        Password protect
+                    </label>
+                    <label class="option-checkbox">
+                        <input type="checkbox" id="encrypt-option">
+                        Encrypt files
+                    </label>
+                    <label class="option-checkbox">
+                        <input type="checkbox" id="notify-option">
+                        Notify me when downloaded
+                    </label>
+                    <label class="option-checkbox">
+                        <input type="checkbox" id="auto-delete-option">
+                        Auto-delete after first download
+                    </label>
+                </div>
+                <!-- Advanced Security Row (collapsed by default) -->
+                <div class="mb-0">
+                    <a class="small text-muted" data-bs-toggle="collapse" href="#security-options" role="button" aria-expanded="false">
+                        <i class="fas fa-shield-alt me-1"></i> Advanced security options
+                    </a>
+                    <div class="collapse mt-3" id="security-options">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="require-email-verification">
+                                    <label class="form-check-label small" for="require-email-verification">
+                                        Require email verification to download
+                                    </label>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted mb-1">Restrict to email domains (comma-separated)</label>
+                                    <input type="text" class="form-control form-control-sm" id="allowed-domains" placeholder="company.com, partner.org">
+                                </div>
+                                <div class="mb-0">
+                                    <label class="form-label small text-muted mb-1">Restrict to IP addresses (comma-separated)</label>
+                                    <input type="text" class="form-control form-control-sm" id="allowed-ips" placeholder="192.168.1.1, 10.0.0.0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Password Input (hidden initially) -->
@@ -190,11 +252,26 @@
     </div>
 </div>
 
+{% if not is_pro %}
+<div class="quota-bar mb-4">
+    <div class="container">
+        <div class="quota-info">
+            <span class="quota-label">Monthly quota:</span>
+            <span class="quota-value">{{ monthly_remaining|filesizeformat }} remaining</span>
+            <div class="quota-progress">
+                <div class="quota-progress-bar" style="width: {% widthratio monthly_used monthly_limit 100 %}%;"></div>
+            </div>
+            <a href="{% url 'pricing' %}" class="quota-upgrade">Upgrade for unlimited</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="feature-bar">
     <span>No signup</span>
     <span>Free forever</span>
     <span>7-day storage</span>
-    <span>Unlimited transfers</span>
+    <span>{% if is_pro %}Unlimited{% else %}10GB/month{% endif %}</span>
 </div>
 {% endblock %}
 
@@ -251,6 +328,18 @@ fileInput.addEventListener('change', (e) => {
 // Password option toggle
 passwordOption.addEventListener('change', () => {
     passwordSection.style.display = passwordOption.checked ? 'block' : 'none';
+});
+
+// Auto-delete option toggle
+const autoDeleteOption = document.getElementById('auto-delete-option');
+const downloadLimitSelect = document.getElementById('download-limit-select');
+autoDeleteOption.addEventListener('change', () => {
+    if (autoDeleteOption.checked) {
+        downloadLimitSelect.value = '1';
+        downloadLimitSelect.disabled = true;
+    } else {
+        downloadLimitSelect.disabled = false;
+    }
 });
 
 // Add files
@@ -362,6 +451,17 @@ uploadBtn.addEventListener('click', async () => {
     uploadButtonSection.style.display = 'none';
 
     try {
+        // Get options
+        const expirationDays = parseInt(document.getElementById('expiration-select').value);
+        const downloadLimit = document.getElementById('download-limit-select').value;
+        const autoDelete = document.getElementById('auto-delete-option').checked;
+        const notifyOnDownload = document.getElementById('notify-option').checked;
+
+        // Security options
+        const requireEmailVerification = document.getElementById('require-email-verification').checked;
+        const allowedDomains = document.getElementById('allowed-domains').value.trim();
+        const allowedIps = document.getElementById('allowed-ips').value.trim();
+
         // Create transfer
         const createResponse = await fetch('/api/transfers/', {
             method: 'POST',
@@ -375,6 +475,12 @@ uploadBtn.addEventListener('click', async () => {
                 message: document.getElementById('message-input').value,
                 password: passwordOption.checked ? passwordInput.value : '',
                 encryption: document.getElementById('encrypt-option').checked ? 'server' : 'none',
+                expiration_days: expirationDays,
+                max_downloads: autoDelete ? 1 : (downloadLimit ? parseInt(downloadLimit) : null),
+                notify_on_download: notifyOnDownload,
+                require_email_verification: requireEmailVerification,
+                allowed_domains: allowedDomains,
+                allowed_ips: allowedIps,
             }),
         });
 

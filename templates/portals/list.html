@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}My Upload Portals - SendFiles.Online{% endblock %}
+{% block description %}Manage your upload portals. Let others send files directly to you.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><span class="current">Upload Portals</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Upload Portals</h1>
+                <a href="{% url 'portal_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i> Create Portal
+                </a>
+            </div>
+
+            <p class="text-muted mb-4">
+                Upload portals let others send files directly to you. Create a custom upload page and share the link with clients, colleagues, or anyone who needs to send you files.
+            </p>
+
+            {% if portals %}
+            <div class="row g-4">
+                {% for portal in portals %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h3 class="h5 mb-1">{{ portal.name }}</h3>
+                                    <small class="text-muted font-mono">/p/{{ portal.slug }}/</small>
+                                </div>
+                                <span class="badge {% if portal.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if portal.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </div>
+                            {% if portal.description %}
+                            <p class="text-muted small mt-2 mb-0">{{ portal.description|truncatewords:20 }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    {{ portal.total_uploads }} upload{{ portal.total_uploads|pluralize }}
+                                </small>
+                                <div>
+                                    <a href="{{ portal.public_url }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <a href="{% url 'portal_detail' slug=portal.slug %}" class="btn btn-sm btn-outline-primary">
+                                        Manage
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h3 class="h5">No portals yet</h3>
+                    <p class="text-muted mb-4">Create your first upload portal to start receiving files.</p>
+                    <a href="{% url 'portal_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Create Your First Portal
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

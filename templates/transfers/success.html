@@ -78,8 +78,19 @@
                             <p class="font-mono mb-0">{{ transfer.expires_at|date:"M d, Y" }}</p>
                         </div>
                         <div class="col-6">
+                            <small class="text-muted">Download Limit</small>
+                            <p class="font-mono mb-0">{% if transfer.max_downloads %}{{ transfer.max_downloads }}{% else %}Unlimited{% endif %}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
                             <small class="text-muted">Password</small>
                             <p class="font-mono mb-0">{% if transfer.is_password_protected %}Yes{% else %}No{% endif %}</p>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Downloads</small>
+                            <p class="font-mono mb-0">{{ transfer.download_count }}</p>
                         </div>
                     </div>
                 </div>

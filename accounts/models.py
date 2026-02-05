@@ -509,6 +509,229 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return EmailAddress.objects.filter(account=self)
 
 
+class Team(models.Model):
+    """Team account for business/enterprise users."""
+
+    id = models.UUIDField(primary_key=True, default=Utils.generate_uuid, editable=False)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=64, unique=True)
+    owner = models.ForeignKey(
+        'CustomUser',
+        on_delete=models.CASCADE,
+        related_name='owned_teams'
+    )
+
+    # Limits
+    max_members = models.PositiveIntegerField(default=10)
+    max_storage_bytes = models.BigIntegerField(default=1099511627776)  # 1TB
+    current_storage_bytes = models.BigIntegerField(default=0)
+
+    # Settings
+    require_2fa = models.BooleanField(default=False)
+    default_expiration_days = models.PositiveIntegerField(default=30)
+    allowed_domains = models.TextField(blank=True, help_text="Members must have email from these domains")
+
+    # Branding (inherits from UserBranding or has own)
+    use_owner_branding = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def member_count(self):
+        return self.members.count()
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
+class TeamMember(models.Model):
+    """Team membership."""
+
+    ROLE_OWNER = 'owner'
+    ROLE_ADMIN = 'admin'
+    ROLE_MEMBER = 'member'
+    ROLE_VIEWER = 'viewer'
+    ROLE_CHOICES = [
+        (ROLE_OWNER, 'Owner'),
+        (ROLE_ADMIN, 'Admin'),
+        (ROLE_MEMBER, 'Member'),
+        (ROLE_VIEWER, 'Viewer'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=Utils.generate_uuid, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='members')
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='team_memberships')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_MEMBER)
+
+    # Invitation status
+    is_active = models.BooleanField(default=False)  # Becomes True when invitation is accepted
+    invitation_token = models.CharField(max_length=64, blank=True)
+    invited_at = models.DateTimeField(auto_now_add=True)
+    joined_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('team', 'user')
+        ordering = ['role', 'joined_at']
+
+    def __str__(self):
+        return f"{self.user.email} - {self.team.name} ({self.role})"
+
+    @property
+    def can_manage_members(self):
+        return self.role in [self.ROLE_OWNER, self.ROLE_ADMIN]
+
+    @property
+    def can_transfer(self):
+        return self.role in [self.ROLE_OWNER, self.ROLE_ADMIN, self.ROLE_MEMBER]
+
+    @property
+    def can_view(self):
+        return True  # All roles can view
+
+
+class TeamInvitation(models.Model):
+    """Pending team invitation."""
+
+    id = models.UUIDField(primary_key=True, default=Utils.generate_uuid, editable=False)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='invitations')
+    email = models.EmailField()
+    role = models.CharField(max_length=20, choices=TeamMember.ROLE_CHOICES, default=TeamMember.ROLE_MEMBER)
+    invited_by = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='sent_invitations')
+    token = models.CharField(max_length=64, default=Utils.generate_hex_uuid)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Invitation to {self.email} for {self.team.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(days=7)
+        super().save(*args, **kwargs)
+
+    @property
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+
+class AuditLog(models.Model):
+    """Audit logging for enterprise compliance."""
+
+    ACTION_LOGIN = 'login'
+    ACTION_LOGOUT = 'logout'
+    ACTION_TRANSFER_CREATE = 'transfer_create'
+    ACTION_TRANSFER_DOWNLOAD = 'transfer_download'
+    ACTION_TRANSFER_DELETE = 'transfer_delete'
+    ACTION_MEMBER_INVITE = 'member_invite'
+    ACTION_MEMBER_REMOVE = 'member_remove'
+    ACTION_SETTINGS_CHANGE = 'settings_change'
+    ACTION_CHOICES = [
+        (ACTION_LOGIN, 'Login'),
+        (ACTION_LOGOUT, 'Logout'),
+        (ACTION_TRANSFER_CREATE, 'Transfer Created'),
+        (ACTION_TRANSFER_DOWNLOAD, 'Transfer Downloaded'),
+        (ACTION_TRANSFER_DELETE, 'Transfer Deleted'),
+        (ACTION_MEMBER_INVITE, 'Member Invited'),
+        (ACTION_MEMBER_REMOVE, 'Member Removed'),
+        (ACTION_SETTINGS_CHANGE, 'Settings Changed'),
+    ]
+
+    id = models.BigAutoField(primary_key=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True, related_name='audit_logs')
+    user = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True, related_name='audit_logs')
+    action = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    description = models.TextField(blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['team', 'created_at']),
+            models.Index(fields=['user', 'created_at']),
+            models.Index(fields=['action', 'created_at']),
+        ]
+
+    def __str__(self):
+        return f"{self.action} by {self.user} at {self.created_at}"
+
+    @classmethod
+    def log(cls, action, user=None, team=None, description='', ip_address=None, user_agent='', metadata=None):
+        """Create an audit log entry."""
+        return cls.objects.create(
+            action=action,
+            user=user,
+            team=team,
+            description=description,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            metadata=metadata or {},
+        )
+
+
+class UserBranding(models.Model):
+    """Custom branding settings for Pro/Business users."""
+
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='branding'
+    )
+
+    # Logo and images
+    logo_url = models.URLField(blank=True, help_text="URL to custom logo")
+    favicon_url = models.URLField(blank=True, help_text="URL to custom favicon")
+    background_url = models.URLField(blank=True, help_text="URL to custom background image")
+
+    # Colors
+    primary_color = models.CharField(max_length=7, default='#111111', help_text="Primary brand color (hex)")
+    secondary_color = models.CharField(max_length=7, default='#f5f5f5', help_text="Secondary color (hex)")
+    text_color = models.CharField(max_length=7, default='#111111', help_text="Text color (hex)")
+
+    # Branding options
+    company_name = models.CharField(max_length=255, blank=True)
+    hide_sendfiles_branding = models.BooleanField(default=False, help_text="Hide 'Powered by SendFiles' text")
+    custom_footer_text = models.TextField(blank=True)
+
+    # Custom domain (Enterprise)
+    custom_domain = models.CharField(max_length=255, blank=True, help_text="Custom domain for transfers")
+    custom_domain_verified = models.BooleanField(default=False)
+
+    # Email branding
+    email_logo_url = models.URLField(blank=True)
+    email_footer_text = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'User Branding'
+        verbose_name_plural = 'User Brandings'
+
+    def __str__(self):
+        return f"Branding for {self.user.email}"
+
+    @classmethod
+    def get_or_create_for_user(cls, user):
+        """Get or create branding for a user."""
+        branding, created = cls.objects.get_or_create(user=user)
+        return branding
+
+
 class EmailAddress(models.Model):
     account = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(null=True, blank=False)
