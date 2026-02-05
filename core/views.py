@@ -559,6 +559,23 @@ class DeleteAccountPage(View):
         )
 
 
+class ApiDocsPage(View):
+    """API documentation page."""
+
+    def get(self, request):
+        settings = GlobalVars.get_globals(request)
+        return render(
+            request,
+            'api_docs.html',
+            {
+                'title': f"API Documentation | {config.PROJECT_NAME}",
+                'description': 'SendFiles.Online REST API documentation. Upload files programmatically, automate transfers, and integrate file sharing into your applications.',
+                'page': 'api-docs',
+                'g': settings,
+            }
+        )
+
+
 class PlatformIndexPage(View):
     """Index page listing all platforms for sending large files."""
 

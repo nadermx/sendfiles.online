@@ -19,6 +19,7 @@ urlpatterns = [
     path('privacy/', views.PrivacyPage.as_view(), name='privacy'),
     path('refund/', views.RefundPage.as_view(), name='refund'),
     path('success/', views.SuccessPage.as_view(), name='success'),
+    path('api/docs/', views.ApiDocsPage.as_view(), name='api-docs'),
     path('cancel/', views.CancelSubscriptionPage.as_view(), name='cancel'),
     path('delete-account/', views.DeleteAccountPage.as_view(), name='delete'),
 

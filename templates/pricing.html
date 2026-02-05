@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Pricing - SendFiles.Online | Simple File Sharing Plans{% endblock %}
-{% block description %}SendFiles.Online pricing. Free plan with 10GB transfers and 14-day storage. Upgrade to Pro for 50GB transfers and 30-day storage. No hidden fees.{% endblock %}
+{% block title %}Pricing - SendFiles.Online | File Sharing Plans{% endblock %}
+{% block description %}SendFiles.Online pricing. Free 10GB transfers (5x more than WeTransfer). Pro $9/mo for 50GB. Business $19/mo for 200GB with API access. No hidden fees.{% endblock %}
 {% block og_title %}Pricing - SendFiles.Online{% endblock %}
-{% block og_description %}Free 10GB file transfers. Upgrade to Pro for larger files and longer storage.{% endblock %}
+{% block og_description %}Free 10GB transfers. Pro $9/mo, Business $19/mo with API access.{% endblock %}
 {% block twitter_title %}Pricing - SendFiles.Online{% endblock %}
-{% block twitter_description %}Free 10GB file transfers. Upgrade to Pro for more.{% endblock %}
+{% block twitter_description %}Free 10GB transfers. Pro and Business plans available.{% endblock %}
 {% block canonical_path %}/pricing/{% endblock %}
 
 {% block structured_data %}
@@ -14,50 +14,21 @@
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-        {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://sendfiles.online/"
-        },
-        {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Pricing",
-            "item": "https://sendfiles.online/pricing/"
-        }
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://sendfiles.online/"},
+        {"@type": "ListItem", "position": 2, "name": "Pricing", "item": "https://sendfiles.online/pricing/"}
     ]
 }
 </script>
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-        {
-            "@type": "Question",
-            "name": "Is SendFiles.Online really free?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes! The free plan includes 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required, no signup needed for basic transfers."
-            }
-        },
-        {
-            "@type": "Question",
-            "name": "What's the difference between Free and Pro?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Pro gives you larger transfers (50GB vs 10GB), longer storage (30 days vs 14 days), download tracking, custom branding, and priority support."
-            }
-        },
-        {
-            "@type": "Question",
-            "name": "Can I cancel my Pro subscription anytime?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, you can cancel anytime. We also offer a 30-day money-back guarantee on all paid plans."
-            }
-        }
+    "@type": "Product",
+    "name": "SendFiles.Online",
+    "description": "Fast, simple file sharing service",
+    "offers": [
+        {"@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD"},
+        {"@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "USD", "priceValidUntil": "2027-12-31"},
+        {"@type": "Offer", "name": "Business", "price": "19", "priceCurrency": "USD", "priceValidUntil": "2027-12-31"}
     ]
 }
 </script>
@@ -79,137 +50,252 @@
     <!-- Header -->
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bold mb-3">Simple, Transparent Pricing</h1>
-        <p class="lead text-muted">Start free. Upgrade when you need more.</p>
+        <p class="lead text-muted">Start free with 10GB transfers. Upgrade when you need more.</p>
+        <p class="text-muted"><small>Our free tier offers 5x more than competitors</small></p>
     </div>
 
     <!-- Pricing Cards -->
     <div class="row justify-content-center g-4 mb-5">
         <!-- Free Plan -->
-        <div class="col-md-5 col-lg-4">
+        <div class="col-lg-3 col-md-6">
             <div class="card h-100">
-                <div class="card-body p-4">
+                <div class="card-body p-4 d-flex flex-column">
                     <h2 class="h4 mb-1">Free</h2>
-                    <p class="text-muted small mb-4">For occasional sharing</p>
+                    <p class="text-muted small mb-3">For occasional sharing</p>
 
                     <div class="mb-4">
-                        <span class="display-4 fw-bold">$0</span>
+                        <span class="display-5 fw-bold">$0</span>
                         <span class="text-muted">/forever</span>
                     </div>
 
-                    <a href="/" class="btn btn-outline-primary btn-lg w-100 mb-4">Start Sharing</a>
-
-                    <ul class="list-unstyled mb-0">
+                    <ul class="list-unstyled mb-4 flex-grow-1">
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>10GB</strong> per transfer</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>14 days</strong> file storage</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>14 days</strong> storage</li>
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited transfers</li>
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Password protection</li>
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> No signup required</li>
                         <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> Download tracking</li>
-                        <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> Custom branding</li>
+                        <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> API access</li>
                     </ul>
+
+                    <a href="/" class="btn btn-outline-primary btn-lg w-100">Start Free</a>
                 </div>
             </div>
         </div>
 
         <!-- Pro Plan -->
-        <div class="col-md-5 col-lg-4">
-            <div class="card h-100 border-dark">
-                <div class="card-header bg-dark text-white text-center py-2">
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white text-center py-2">
                     <small class="fw-bold">MOST POPULAR</small>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-4 d-flex flex-column">
                     <h2 class="h4 mb-1">Pro</h2>
-                    <p class="text-muted small mb-4">For professionals & teams</p>
+                    <p class="text-muted small mb-3">For professionals</p>
 
                     <div class="mb-4">
-                        <span class="display-4 fw-bold">$9</span>
+                        <span class="display-5 fw-bold">$9</span>
                         <span class="text-muted">/month</span>
                     </div>
 
-                    <a href="/checkout/?plan=pro" class="btn btn-primary btn-lg w-100 mb-4">Upgrade to Pro</a>
-
-                    <ul class="list-unstyled mb-0">
+                    <ul class="list-unstyled mb-4 flex-grow-1">
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>50GB</strong> per transfer</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>30 days</strong> file storage</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>30 days</strong> storage</li>
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited transfers</li>
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Password protection</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Account dashboard</li>
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Download tracking</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Remove SendFiles branding</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Transfer history</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom branding</li>
+                        <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> API access</li>
                     </ul>
+
+                    <a href="/checkout/?plan=pro" class="btn btn-primary btn-lg w-100">Upgrade to Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Plan -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 border-dark">
+                <div class="card-header bg-dark text-white text-center py-2">
+                    <small class="fw-bold">BEST VALUE</small>
+                </div>
+                <div class="card-body p-4 d-flex flex-column">
+                    <h2 class="h4 mb-1">Business</h2>
+                    <p class="text-muted small mb-3">For teams & developers</p>
+
+                    <div class="mb-4">
+                        <span class="display-5 fw-bold">$19</span>
+                        <span class="text-muted">/month</span>
+                    </div>
+
+                    <ul class="list-unstyled mb-4 flex-grow-1">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>200GB</strong> per transfer</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>90 days</strong> storage</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited transfers</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> All Pro features</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>API access</strong></li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Webhook notifications</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Team accounts (5 users)</li>
+                    </ul>
+
+                    <a href="/checkout/?plan=business" class="btn btn-dark btn-lg w-100">Get Business</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100">
+                <div class="card-body p-4 d-flex flex-column">
+                    <h2 class="h4 mb-1">Enterprise</h2>
+                    <p class="text-muted small mb-3">For large organizations</p>
+
+                    <div class="mb-4">
+                        <span class="display-5 fw-bold">Custom</span>
+                    </div>
+
+                    <ul class="list-unstyled mb-4 flex-grow-1">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>Unlimited</strong> transfer size</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>Custom</strong> retention</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> All Business features</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited team members</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> SSO/SAML integration</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Dedicated support</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> SLA guarantee</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom domain</li>
+                    </ul>
+
+                    <a href="/contact/" class="btn btn-outline-dark btn-lg w-100">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Section -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card bg-light border-0">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="h4 mb-2"><i class="fas fa-code me-2"></i> Developer API</h2>
+                            <p class="text-muted mb-0">Integrate file transfers into your app with our REST API. Available on Business and Enterprise plans. Full documentation, SDKs for Python, Node.js, and PHP.</p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <a href="/api/docs/" class="btn btn-primary">View API Docs</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Feature Comparison Table -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
             <h2 class="h4 text-center mb-4">Feature Comparison</h2>
             <div class="table-responsive">
-                <table class="table">
-                    <thead>
+                <table class="table table-bordered">
+                    <thead class="table-light">
                         <tr>
                             <th>Feature</th>
                             <th class="text-center">Free</th>
-                            <th class="text-center">Pro</th>
+                            <th class="text-center bg-primary bg-opacity-10">Pro</th>
+                            <th class="text-center">Business</th>
+                            <th class="text-center">Enterprise</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Max file size per transfer</td>
+                            <td>Max transfer size</td>
                             <td class="text-center">10GB</td>
-                            <td class="text-center"><strong>50GB</strong></td>
+                            <td class="text-center bg-primary bg-opacity-10"><strong>50GB</strong></td>
+                            <td class="text-center"><strong>200GB</strong></td>
+                            <td class="text-center"><strong>Unlimited</strong></td>
                         </tr>
                         <tr>
-                            <td>File storage duration</td>
+                            <td>Storage duration</td>
                             <td class="text-center">14 days</td>
-                            <td class="text-center"><strong>30 days</strong></td>
+                            <td class="text-center bg-primary bg-opacity-10">30 days</td>
+                            <td class="text-center">90 days</td>
+                            <td class="text-center">Custom</td>
                         </tr>
                         <tr>
-                            <td>Number of transfers</td>
+                            <td>Transfers per month</td>
+                            <td class="text-center">Unlimited</td>
+                            <td class="text-center bg-primary bg-opacity-10">Unlimited</td>
                             <td class="text-center">Unlimited</td>
                             <td class="text-center">Unlimited</td>
                         </tr>
                         <tr>
                             <td>Password protection</td>
                             <td class="text-center"><i class="fas fa-check text-success"></i></td>
-                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
-                        </tr>
-                        <tr>
-                            <td>HTTPS encryption</td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-check text-success"></i></td>
                             <td class="text-center"><i class="fas fa-check text-success"></i></td>
                             <td class="text-center"><i class="fas fa-check text-success"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Account required</td>
-                            <td class="text-center">No</td>
-                            <td class="text-center">Yes</td>
                         </tr>
                         <tr>
                             <td>Download tracking</td>
                             <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-check text-success"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
                             <td class="text-center"><i class="fas fa-check text-success"></i></td>
                         </tr>
                         <tr>
                             <td>Transfer history</td>
                             <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-check text-success"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
                             <td class="text-center"><i class="fas fa-check text-success"></i></td>
                         </tr>
                         <tr>
-                            <td>Remove SendFiles branding</td>
+                            <td>Custom branding</td>
                             <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-check text-success"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
                             <td class="text-center"><i class="fas fa-check text-success"></i></td>
                         </tr>
                         <tr>
-                            <td>Priority support</td>
+                            <td>API access</td>
                             <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-times text-muted"></i></td>
                             <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Webhook notifications</td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Team members</td>
+                            <td class="text-center">1</td>
+                            <td class="text-center bg-primary bg-opacity-10">1</td>
+                            <td class="text-center">5</td>
+                            <td class="text-center">Unlimited</td>
+                        </tr>
+                        <tr>
+                            <td>Support</td>
+                            <td class="text-center">Email</td>
+                            <td class="text-center bg-primary bg-opacity-10">Email</td>
+                            <td class="text-center">Priority</td>
+                            <td class="text-center">Dedicated</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Price</strong></td>
+                            <td class="text-center"><strong>Free</strong></td>
+                            <td class="text-center bg-primary bg-opacity-10"><strong>$9/mo</strong></td>
+                            <td class="text-center"><strong>$19/mo</strong></td>
+                            <td class="text-center"><strong>Custom</strong></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <p class="text-muted small text-center mt-2">Annual billing available with 2 months free</p>
         </div>
     </div>
 
@@ -222,12 +308,12 @@
                 <div class="accordion-item">
                     <h3 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            Is SendFiles.Online really free?
+                            How does SendFiles compare to WeTransfer?
                         </button>
                     </h3>
                     <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#pricingFaq">
                         <div class="accordion-body text-muted">
-                            Yes! The free plan includes 10GB file transfers, 14-day storage, password protection, and unlimited transfers. No credit card required, and you don't even need to create an account for basic transfers.
+                            Our free tier offers <strong>10GB transfers</strong> compared to WeTransfer's 2GB - that's 5x more! Our Pro plan at $9/month includes 50GB transfers, while our Business plan at $19/month matches WeTransfer's top tier with 200GB transfers plus API access.
                         </div>
                     </div>
                 </div>
@@ -235,12 +321,12 @@
                 <div class="accordion-item">
                     <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                            What happens when my files expire?
+                            What can I do with the API?
                         </button>
                     </h3>
                     <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
                         <div class="accordion-body text-muted">
-                            Files are automatically deleted after the storage period (14 days for Free, 30 days for Pro). You'll need to upload them again if you want to share them after expiration. We send reminder emails to Pro users before files expire.
+                            Our REST API lets you integrate file transfers into your applications. Create transfers, upload files, get download links, track downloads, and receive webhook notifications. Perfect for automating file delivery, building custom upload portals, or integrating with your existing workflows.
                         </div>
                     </div>
                 </div>
@@ -248,12 +334,12 @@
                 <div class="accordion-item">
                     <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                            Can I cancel my Pro subscription anytime?
+                            Can I cancel anytime?
                         </button>
                     </h3>
                     <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
                         <div class="accordion-body text-muted">
-                            Yes, you can cancel anytime from your account settings. You'll continue to have Pro features until the end of your billing period. We also offer a 30-day money-back guarantee if you're not satisfied.
+                            Yes! Cancel anytime from your account settings. You'll keep access until the end of your billing period. We also offer a <strong>30-day money-back guarantee</strong> on all paid plans.
                         </div>
                     </div>
                 </div>
@@ -261,12 +347,12 @@
                 <div class="accordion-item">
                     <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                            Do you offer team or business plans?
+                            Do you offer annual billing?
                         </button>
                     </h3>
                     <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
                         <div class="accordion-body text-muted">
-                            For teams and businesses with specific needs, please <a href="/contact/">contact us</a>. We can create custom plans with higher limits, team accounts, API access, and dedicated support.
+                            Yes! Pay annually and get <strong>2 months free</strong>. Pro is $90/year (instead of $108), Business is $190/year (instead of $228).
                         </div>
                     </div>
                 </div>
@@ -279,7 +365,7 @@
                     </h3>
                     <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
                         <div class="accordion-body text-muted">
-                            We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and select cryptocurrencies. All payments are processed securely through our payment partners.
+                            We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and cryptocurrency. All payments are processed securely.
                         </div>
                     </div>
                 </div>
@@ -290,8 +376,9 @@
     <!-- CTA -->
     <div class="text-center mt-5 pt-4">
         <h2 class="h4 mb-3">Ready to share files?</h2>
-        <p class="text-muted mb-4">No signup required. Start sharing in seconds.</p>
-        <a href="/" class="btn btn-primary btn-lg">Upload Files Free</a>
+        <p class="text-muted mb-4">Start free with 10GB transfers. No credit card required.</p>
+        <a href="/" class="btn btn-primary btn-lg me-2">Upload Files Free</a>
+        <a href="/api/docs/" class="btn btn-outline-primary btn-lg">View API Docs</a>
     </div>
 </div>
 {% endblock %}

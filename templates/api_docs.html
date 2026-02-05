@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+
+{% block title %}API Documentation - SendFiles.Online | Developer API{% endblock %}
+{% block description %}SendFiles.Online REST API documentation. Integrate file transfers into your applications. Create transfers, upload files, track downloads, and receive webhooks.{% endblock %}
+{% block og_title %}API Documentation - SendFiles.Online{% endblock %}
+{% block og_description %}Integrate file transfers into your app with our REST API.{% endblock %}
+{% block canonical_path %}/api/docs/{% endblock %}
+
+{% block extra_css %}
+<style>
+    .code-block {
+        background: var(--gray-900);
+        color: #e8e8e8;
+        padding: 1rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        overflow-x: auto;
+    }
+    .code-block .comment { color: #6a9955; }
+    .code-block .string { color: #ce9178; }
+    .code-block .keyword { color: #569cd6; }
+    .code-block .number { color: #b5cea8; }
+    .endpoint-badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    .endpoint-get { background: #22c55e; color: white; }
+    .endpoint-post { background: #3b82f6; color: white; }
+    .endpoint-delete { background: #ef4444; color: white; }
+    .param-table td { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+    .param-required { color: #ef4444; }
+    .toc-link { color: var(--gray-600); text-decoration: none; }
+    .toc-link:hover { color: var(--gray-900); }
+    .section-anchor { scroll-margin-top: 80px; }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><span class="current">API Documentation</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar TOC -->
+        <div class="col-lg-3 d-none d-lg-block">
+            <div class="sticky-top" style="top: 100px;">
+                <h6 class="text-muted mb-3">ON THIS PAGE</h6>
+                <nav class="nav flex-column">
+                    <a class="toc-link mb-2" href="#overview">Overview</a>
+                    <a class="toc-link mb-2" href="#authentication">Authentication</a>
+                    <a class="toc-link mb-2" href="#create-transfer">Create Transfer</a>
+                    <a class="toc-link mb-2" href="#upload-file">Upload File</a>
+                    <a class="toc-link mb-2" href="#finalize-transfer">Finalize Transfer</a>
+                    <a class="toc-link mb-2" href="#get-transfer">Get Transfer</a>
+                    <a class="toc-link mb-2" href="#list-transfers">List Transfers</a>
+                    <a class="toc-link mb-2" href="#delete-transfer">Delete Transfer</a>
+                    <a class="toc-link mb-2" href="#webhooks">Webhooks</a>
+                    <a class="toc-link mb-2" href="#errors">Error Handling</a>
+                    <a class="toc-link mb-2" href="#rate-limits">Rate Limits</a>
+                    <a class="toc-link mb-2" href="#sdks">SDKs</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <h1 class="mb-4">API Documentation</h1>
+            <p class="lead text-muted mb-5">Integrate SendFiles.Online into your applications with our REST API.</p>
+
+            <!-- Overview -->
+            <section id="overview" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Overview</h2>
+                <p>The SendFiles.Online API allows you to programmatically create file transfers, upload files, and manage your transfers. All API access requires a Business or Enterprise plan.</p>
+
+                <div class="card bg-light border-0 mb-3">
+                    <div class="card-body">
+                        <strong>Base URL:</strong> <code>https://sendfiles.online/api/v1/</code>
+                    </div>
+                </div>
+
+                <p>All requests must be made over HTTPS. The API accepts JSON request bodies and returns JSON responses.</p>
+            </section>
+
+            <!-- Authentication -->
+            <section id="authentication" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Authentication</h2>
+                <p>Authenticate using your API key in the <code>Authorization</code> header:</p>
+
+                <div class="code-block mb-3">
+Authorization: Bearer YOUR_API_KEY
+                </div>
+
+                <p>Get your API key from your <a href="/account/">account dashboard</a>. Keep your API key secret - don't share it or commit it to version control.</p>
+
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Security:</strong> Never expose your API key in client-side code. Make API calls from your server.
+                </div>
+            </section>
+
+            <!-- Create Transfer -->
+            <section id="create-transfer" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Create Transfer</h2>
+                <p>Create a new transfer to get an upload URL.</p>
+
+                <p><span class="endpoint-badge endpoint-post">POST</span> <code>/api/v1/transfers/</code></p>
+
+                <h5 class="mt-4">Request Body</h5>
+                <table class="table param-table">
+                    <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>message</td><td>string</td><td>Optional message for recipients</td></tr>
+                        <tr><td>password</td><td>string</td><td>Optional password protection</td></tr>
+                        <tr><td>expires_days</td><td>integer</td><td>Days until expiration (default: plan limit)</td></tr>
+                        <tr><td>notify_email</td><td>string</td><td>Email to notify on download</td></tr>
+                    </tbody>
+                </table>
+
+                <h5 class="mt-4">Example Request</h5>
+                <div class="code-block mb-3">
+<span class="keyword">curl</span> -X POST https://sendfiles.online/api/v1/transfers/ \
+  -H <span class="string">"Authorization: Bearer YOUR_API_KEY"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
+  -d <span class="string">'{"message": "Project files", "password": "secret123"}'</span>
+                </div>
+
+                <h5 class="mt-4">Response</h5>
+                <div class="code-block">
+{
+  <span class="string">"id"</span>: <span class="string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="string">"short_id"</span>: <span class="string">"abc12345"</span>,
+  <span class="string">"status"</span>: <span class="string">"uploading"</span>,
+  <span class="string">"upload_url"</span>: <span class="string">"https://sendfiles.online/api/v1/transfers/550e8400.../upload/"</span>,
+  <span class="string">"created_at"</span>: <span class="string">"2026-02-05T12:00:00Z"</span>,
+  <span class="string">"expires_at"</span>: <span class="string">"2026-05-06T12:00:00Z"</span>
+}
+                </div>
+            </section>
+
+            <!-- Upload File -->
+            <section id="upload-file" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Upload File</h2>
+                <p>Upload a file to an existing transfer. Use multipart/form-data.</p>
+
+                <p><span class="endpoint-badge endpoint-post">POST</span> <code>/api/v1/transfers/{id}/upload/</code></p>
+
+                <h5 class="mt-4">Request Body (multipart/form-data)</h5>
+                <table class="table param-table">
+                    <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>file <span class="param-required">*</span></td><td>file</td><td>The file to upload</td></tr>
+                    </tbody>
+                </table>
+
+                <h5 class="mt-4">Example Request</h5>
+                <div class="code-block mb-3">
+<span class="keyword">curl</span> -X POST https://sendfiles.online/api/v1/transfers/550e8400.../upload/ \
+  -H <span class="string">"Authorization: Bearer YOUR_API_KEY"</span> \
+  -F <span class="string">"file=@/path/to/document.pdf"</span>
+                </div>
+
+                <h5 class="mt-4">Response</h5>
+                <div class="code-block">
+{
+  <span class="string">"id"</span>: <span class="string">"660f9500-f30c-52e5-b827-557766551111"</span>,
+  <span class="string">"name"</span>: <span class="string">"document.pdf"</span>,
+  <span class="string">"size"</span>: <span class="number">1048576</span>,
+  <span class="string">"mime_type"</span>: <span class="string">"application/pdf"</span>
+}
+                </div>
+
+                <p class="text-muted small mt-3">Upload multiple files by making multiple requests to this endpoint.</p>
+            </section>
+
+            <!-- Finalize Transfer -->
+            <section id="finalize-transfer" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Finalize Transfer</h2>
+                <p>Finalize a transfer after uploading all files. This generates the download link.</p>
+
+                <p><span class="endpoint-badge endpoint-post">POST</span> <code>/api/v1/transfers/{id}/finalize/</code></p>
+
+                <h5 class="mt-4">Example Request</h5>
+                <div class="code-block mb-3">
+<span class="keyword">curl</span> -X POST https://sendfiles.online/api/v1/transfers/550e8400.../finalize/ \
+  -H <span class="string">"Authorization: Bearer YOUR_API_KEY"</span>
+                </div>
+
+                <h5 class="mt-4">Response</h5>
+                <div class="code-block">
+{
+  <span class="string">"id"</span>: <span class="string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="string">"short_id"</span>: <span class="string">"abc12345"</span>,
+  <span class="string">"status"</span>: <span class="string">"ready"</span>,
+  <span class="string">"download_url"</span>: <span class="string">"https://sendfiles.online/d/abc12345/"</span>,
+  <span class="string">"files"</span>: [
+    {<span class="string">"name"</span>: <span class="string">"document.pdf"</span>, <span class="string">"size"</span>: <span class="number">1048576</span>}
+  ],
+  <span class="string">"total_size"</span>: <span class="number">1048576</span>,
+  <span class="string">"download_count"</span>: <span class="number">0</span>,
+  <span class="string">"expires_at"</span>: <span class="string">"2026-05-06T12:00:00Z"</span>
+}
+                </div>
+            </section>
+
+            <!-- Get Transfer -->
+            <section id="get-transfer" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Get Transfer</h2>
+                <p>Get details about a specific transfer.</p>
+
+                <p><span class="endpoint-badge endpoint-get">GET</span> <code>/api/v1/transfers/{id}/</code></p>
+
+                <h5 class="mt-4">Example Request</h5>
+                <div class="code-block mb-3">
+<span class="keyword">curl</span> https://sendfiles.online/api/v1/transfers/550e8400.../ \
+  -H <span class="string">"Authorization: Bearer YOUR_API_KEY"</span>
+                </div>
+
+                <h5 class="mt-4">Response</h5>
+                <div class="code-block">
+{
+  <span class="string">"id"</span>: <span class="string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="string">"short_id"</span>: <span class="string">"abc12345"</span>,
+  <span class="string">"status"</span>: <span class="string">"ready"</span>,
+  <span class="string">"download_url"</span>: <span class="string">"https://sendfiles.online/d/abc12345/"</span>,
+  <span class="string">"files"</span>: [...],
+  <span class="string">"total_size"</span>: <span class="number">1048576</span>,
+  <span class="string">"download_count"</span>: <span class="number">5</span>,
+  <span class="string">"created_at"</span>: <span class="string">"2026-02-05T12:00:00Z"</span>,
+  <span class="string">"expires_at"</span>: <span class="string">"2026-05-06T12:00:00Z"</span>
+}
+                </div>
+            </section>
+
+            <!-- List Transfers -->
+            <section id="list-transfers" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">List Transfers</h2>
+                <p>List all your transfers with pagination.</p>
+
+                <p><span class="endpoint-badge endpoint-get">GET</span> <code>/api/v1/transfers/</code></p>
+
+                <h5 class="mt-4">Query Parameters</h5>
+                <table class="table param-table">
+                    <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>page</td><td>integer</td><td>Page number (default: 1)</td></tr>
+                        <tr><td>per_page</td><td>integer</td><td>Items per page (default: 20, max: 100)</td></tr>
+                        <tr><td>status</td><td>string</td><td>Filter by status: uploading, ready, expired</td></tr>
+                    </tbody>
+                </table>
+
+                <h5 class="mt-4">Response</h5>
+                <div class="code-block">
+{
+  <span class="string">"transfers"</span>: [...],
+  <span class="string">"total"</span>: <span class="number">42</span>,
+  <span class="string">"page"</span>: <span class="number">1</span>,
+  <span class="string">"per_page"</span>: <span class="number">20</span>,
+  <span class="string">"pages"</span>: <span class="number">3</span>
+}
+                </div>
+            </section>
+
+            <!-- Delete Transfer -->
+            <section id="delete-transfer" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Delete Transfer</h2>
+                <p>Delete a transfer and all its files.</p>
+
+                <p><span class="endpoint-badge endpoint-delete">DELETE</span> <code>/api/v1/transfers/{id}/</code></p>
+
+                <h5 class="mt-4">Example Request</h5>
+                <div class="code-block mb-3">
+<span class="keyword">curl</span> -X DELETE https://sendfiles.online/api/v1/transfers/550e8400.../ \
+  -H <span class="string">"Authorization: Bearer YOUR_API_KEY"</span>
+                </div>
+
+                <h5 class="mt-4">Response</h5>
+                <div class="code-block">
+{
+  <span class="string">"success"</span>: <span class="keyword">true</span>,
+  <span class="string">"message"</span>: <span class="string">"Transfer deleted"</span>
+}
+                </div>
+            </section>
+
+            <!-- Webhooks -->
+            <section id="webhooks" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Webhooks</h2>
+                <p>Receive notifications when events occur. Configure webhooks in your <a href="/account/">account settings</a>.</p>
+
+                <h5 class="mt-4">Events</h5>
+                <table class="table">
+                    <thead><tr><th>Event</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>transfer.ready</code></td><td>Transfer finalized and ready for download</td></tr>
+                        <tr><td><code>transfer.downloaded</code></td><td>Someone downloaded the transfer</td></tr>
+                        <tr><td><code>transfer.expired</code></td><td>Transfer has expired</td></tr>
+                    </tbody>
+                </table>
+
+                <h5 class="mt-4">Webhook Payload</h5>
+                <div class="code-block">
+{
+  <span class="string">"event"</span>: <span class="string">"transfer.downloaded"</span>,
+  <span class="string">"timestamp"</span>: <span class="string">"2026-02-05T14:30:00Z"</span>,
+  <span class="string">"data"</span>: {
+    <span class="string">"transfer_id"</span>: <span class="string">"550e8400..."</span>,
+    <span class="string">"short_id"</span>: <span class="string">"abc12345"</span>,
+    <span class="string">"download_count"</span>: <span class="number">1</span>,
+    <span class="string">"downloader_ip"</span>: <span class="string">"203.0.113.1"</span>
+  }
+}
+                </div>
+            </section>
+
+            <!-- Errors -->
+            <section id="errors" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Error Handling</h2>
+                <p>The API uses standard HTTP status codes. Errors include a JSON body with details.</p>
+
+                <table class="table">
+                    <thead><tr><th>Code</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>400</code></td><td>Bad Request - Invalid parameters</td></tr>
+                        <tr><td><code>401</code></td><td>Unauthorized - Invalid or missing API key</td></tr>
+                        <tr><td><code>403</code></td><td>Forbidden - Insufficient permissions</td></tr>
+                        <tr><td><code>404</code></td><td>Not Found - Transfer doesn't exist</td></tr>
+                        <tr><td><code>413</code></td><td>Payload Too Large - File exceeds plan limit</td></tr>
+                        <tr><td><code>429</code></td><td>Too Many Requests - Rate limited</td></tr>
+                        <tr><td><code>500</code></td><td>Server Error - Something went wrong</td></tr>
+                    </tbody>
+                </table>
+
+                <h5 class="mt-4">Error Response</h5>
+                <div class="code-block">
+{
+  <span class="string">"error"</span>: <span class="string">"invalid_parameter"</span>,
+  <span class="string">"message"</span>: <span class="string">"expires_days must be between 1 and 90"</span>,
+  <span class="string">"field"</span>: <span class="string">"expires_days"</span>
+}
+                </div>
+            </section>
+
+            <!-- Rate Limits -->
+            <section id="rate-limits" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">Rate Limits</h2>
+                <p>API requests are rate limited per API key:</p>
+
+                <table class="table">
+                    <thead><tr><th>Plan</th><th>Requests/minute</th><th>Requests/day</th></tr></thead>
+                    <tbody>
+                        <tr><td>Business</td><td>60</td><td>10,000</td></tr>
+                        <tr><td>Enterprise</td><td>300</td><td>100,000</td></tr>
+                    </tbody>
+                </table>
+
+                <p>Rate limit headers are included in responses:</p>
+                <div class="code-block">
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 58
+X-RateLimit-Reset: 1707145200
+                </div>
+            </section>
+
+            <!-- SDKs -->
+            <section id="sdks" class="section-anchor mb-5">
+                <h2 class="h4 mb-3">SDKs & Libraries</h2>
+                <p>Official SDKs for popular languages:</p>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5><i class="fab fa-python me-2"></i> Python</h5>
+                                <code class="small">pip install sendfiles</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5><i class="fab fa-node-js me-2"></i> Node.js</h5>
+                                <code class="small">npm install sendfiles</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5><i class="fab fa-php me-2"></i> PHP</h5>
+                                <code class="small">composer require sendfiles/sdk</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Python Example</h5>
+                <div class="code-block">
+<span class="keyword">from</span> sendfiles <span class="keyword">import</span> SendFilesClient
+
+client = SendFilesClient(<span class="string">"YOUR_API_KEY"</span>)
+
+<span class="comment"># Create and upload</span>
+transfer = client.create_transfer(message=<span class="string">"Project files"</span>)
+transfer.upload(<span class="string">"/path/to/file.zip"</span>)
+transfer.finalize()
+
+<span class="keyword">print</span>(f<span class="string">"Download URL: {transfer.download_url}"</span>)
+                </div>
+            </section>
+
+            <!-- Help -->
+            <div class="card bg-light border-0 mt-5">
+                <div class="card-body">
+                    <h5>Need Help?</h5>
+                    <p class="mb-0">Questions about the API? <a href="/contact/">Contact our developer support</a> or email <a href="mailto:api@sendfiles.online">api@sendfiles.online</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
