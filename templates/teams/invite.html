@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Invite Member - {{ team.name }} - SendFiles.Online{% endblock %}
+{% block description %}Invite a new member to your team.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></li>
+            <li><a href="{% url 'team_members' slug=team.slug %}">Members</a></li>
+            <li><span class="current">Invite</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h1 class="mb-4">Invite Team Member</h1>
+
+            {% if errors %}
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ email|default:'' }}" required placeholder="colleague@company.com">
+                    <div class="form-text">
+                        {% if team.allowed_domains %}
+                        Only emails from {{ team.allowed_domains }} can be invited.
+                        {% else %}
+                        The user will receive an invitation email with a link to join.
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-select" id="role" name="role">
+                        {% for value, label in roles %}
+                        <option value="{{ value }}" {% if role == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">
+                        <strong>Admin:</strong> Can manage members and view all transfers.<br>
+                        <strong>Member:</strong> Can create transfers and view team-visible ones.<br>
+                        <strong>Viewer:</strong> Can only view team and public transfers.
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i> Send Invitation
+                    </button>
+                    <a href="{% url 'team_members' slug=team.slug %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

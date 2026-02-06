@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Accept Team Invitation - SendFiles.Online{% endblock %}
+{% block description %}Join a team on SendFiles.Online.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong><i class="fas fa-users me-2"></i> Team Invitation</strong>
+                </div>
+                <div class="card-body">
+                    <p>You've been invited to join:</p>
+
+                    <div class="text-center py-3">
+                        <h2>{{ invitation.team.name }}</h2>
+                        <p class="text-muted">as <span class="badge bg-secondary">{{ invitation.get_role_display }}</span></p>
+                    </div>
+
+                    <p class="text-muted small">
+                        Invited by {{ invitation.invited_by.email }} on {{ invitation.created_at|date:"M d, Y" }}
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1">
+                                <i class="fas fa-check me-2"></i> Accept Invitation
+                            </button>
+                            <a href="{% url 'decline_invitation' token=invitation.token %}" class="btn btn-outline-secondary">
+                                Decline
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

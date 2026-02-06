@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 
-from accounts.models import CustomUser
+from accounts.models import CustomUser, Team
 
 
 def generate_short_id():
@@ -54,6 +54,30 @@ class Transfer(models.Model):
         null=True,
         blank=True,
         related_name='transfers'
+    )
+
+    # Team ownership (Business/Enterprise feature)
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='transfers'
+    )
+
+    # Visibility choices
+    VISIBILITY_PRIVATE = 'private'
+    VISIBILITY_TEAM = 'team'
+    VISIBILITY_PUBLIC = 'public'
+    VISIBILITY_CHOICES = [
+        (VISIBILITY_PRIVATE, 'Private'),
+        (VISIBILITY_TEAM, 'Team'),
+        (VISIBILITY_PUBLIC, 'Public'),
+    ]
+    visibility = models.CharField(
+        max_length=20,
+        choices=VISIBILITY_CHOICES,
+        default=VISIBILITY_PRIVATE
     )
 
     # Transfer settings
@@ -108,6 +132,7 @@ class Transfer(models.Model):
             models.Index(fields=['short_id']),
             models.Index(fields=['status', 'expires_at']),
             models.Index(fields=['sender_ip', 'created_at']),
+            models.Index(fields=['team', 'created_at']),
         ]
 
     def __str__(self):

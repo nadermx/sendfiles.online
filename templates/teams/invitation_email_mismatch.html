@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Email Mismatch - SendFiles.Online{% endblock %}
+{% block description %}The invitation was sent to a different email address.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h2>Email Mismatch</h2>
+                    <p class="text-muted">
+                        This invitation was sent to <strong>{{ invitation.email }}</strong>, but you are logged in as <strong>{{ request.user.email }}</strong>.
+                    </p>
+                    <p class="text-muted">
+                        Please log out and sign in with the correct email address, or ask the team administrator to send a new invitation to your current email.
+                    </p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="/logout/" class="btn btn-primary">
+                            Log Out
+                        </a>
+                        <a href="{% url 'team_list' %}" class="btn btn-outline-secondary">
+                            Go to Teams
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

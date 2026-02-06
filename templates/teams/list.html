@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}My Teams - SendFiles.Online{% endblock %}
+{% block description %}Manage your teams and collaborate with colleagues.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><span class="current">Teams</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Teams</h1>
+                <a href="{% url 'team_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i> Create Team
+                </a>
+            </div>
+
+            <p class="text-muted mb-4">
+                Teams let you collaborate with colleagues on file transfers. Share files within your team and manage access permissions.
+            </p>
+
+            {% if pending_invitations %}
+            <div class="alert alert-info mb-4">
+                <strong><i class="fas fa-envelope me-2"></i> Pending Invitations</strong>
+                <div class="mt-2">
+                    {% for invitation in pending_invitations %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>
+                            <strong>{{ invitation.team.name }}</strong>
+                            <span class="text-muted">- invited by {{ invitation.invited_by.email }}</span>
+                        </span>
+                        <div>
+                            <a href="{% url 'accept_invitation' token=invitation.token %}" class="btn btn-sm btn-primary">Accept</a>
+                            <a href="{% url 'decline_invitation' token=invitation.token %}" class="btn btn-sm btn-outline-secondary">Decline</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if teams %}
+            <div class="row g-4">
+                {% for team in teams %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h3 class="h5 mb-1">{{ team.name }}</h3>
+                                    <small class="text-muted">{{ team.member_count }} member{{ team.member_count|pluralize }}</small>
+                                </div>
+                                {% for m in memberships %}
+                                {% if m.team.id == team.id %}
+                                <span class="badge bg-secondary">{{ m.get_role_display }}</span>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    Created {{ team.created_at|date:"M d, Y" }}
+                                </small>
+                                <a href="{% url 'team_detail' slug=team.slug %}" class="btn btn-sm btn-outline-primary">
+                                    Manage
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h3 class="h5">No teams yet</h3>
+                    <p class="text-muted mb-4">Create your first team to start collaborating with colleagues.</p>
+                    <a href="{% url 'team_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Create Your First Team
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

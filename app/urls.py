@@ -16,6 +16,7 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
     path('api/accounts/', include('accounts.urls')),
     path('ipns/', include('finances.urls.payment')),
+    path('', include('accounts.team_urls')),  # Team routes (Business/Enterprise)
     path('', include('transfers.urls')),  # Transfer routes (API + download pages)
     path('', include('core.urls')),  # Core pages (pricing, about, etc.)
 ]

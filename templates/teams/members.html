@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Members - {{ team.name }} - SendFiles.Online{% endblock %}
+{% block description %}Manage team members and invitations.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></li>
+            <li><span class="current">Members</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Team Members</h1>
+                {% if membership.can_manage_members %}
+                <a href="{% url 'team_invite_member' slug=team.slug %}" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-2"></i> Invite Member
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Current Members -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Members ({{ members|length }})</strong>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                {% if membership.can_manage_members %}
+                                <th class="text-end">Actions</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                            <tr>
+                                <td>
+                                    {{ member.user.email }}
+                                    {% if member.user == request.user %}
+                                    <span class="badge bg-secondary">You</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge {% if member.role == 'owner' %}bg-primary{% elif member.role == 'admin' %}bg-info{% elif member.role == 'member' %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ member.get_role_display }}
+                                    </span>
+                                </td>
+                                <td>{{ member.joined_at|date:"M d, Y" }}</td>
+                                {% if membership.can_manage_members %}
+                                <td class="text-end">
+                                    {% if member.role != 'owner' and member.user != request.user %}
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                            Change Role
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <form method="post" action="{% url 'team_update_member_role' slug=team.slug member_id=member.id %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="role" value="admin">
+                                                    <button type="submit" class="dropdown-item {% if member.role == 'admin' %}active{% endif %}">Admin</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form method="post" action="{% url 'team_update_member_role' slug=team.slug member_id=member.id %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="role" value="member">
+                                                    <button type="submit" class="dropdown-item {% if member.role == 'member' %}active{% endif %}">Member</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form method="post" action="{% url 'team_update_member_role' slug=team.slug member_id=member.id %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="role" value="viewer">
+                                                    <button type="submit" class="dropdown-item {% if member.role == 'viewer' %}active{% endif %}">Viewer</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                        <form method="post" action="{% url 'team_remove_member' slug=team.slug member_id=member.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to remove this member?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pending Invitations -->
+            {% if pending_invitations and membership.can_manage_members %}
+            <div class="card">
+                <div class="card-header">
+                    <strong>Pending Invitations ({{ pending_invitations|length }})</strong>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Invited By</th>
+                                <th>Expires</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invitation in pending_invitations %}
+                            <tr>
+                                <td>{{ invitation.email }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ invitation.get_role_display }}</span>
+                                </td>
+                                <td>{{ invitation.invited_by.email }}</td>
+                                <td>{{ invitation.expires_at|date:"M d, Y" }}</td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <form method="post" action="{% url 'team_resend_invitation' slug=team.slug invitation_id=invitation.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                Resend
+                                            </button>
+                                        </form>
+                                        <form method="post" action="{% url 'team_cancel_invitation' slug=team.slug invitation_id=invitation.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Role Descriptions -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <strong>Role Permissions</strong>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Permission</th>
+                                    <th class="text-center">Owner</th>
+                                    <th class="text-center">Admin</th>
+                                    <th class="text-center">Member</th>
+                                    <th class="text-center">Viewer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>View team</td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Create transfers</td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>View all transfers</td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Manage members</td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Delete team</td>
+                                    <td class="text-center text-success"><i class="fas fa-check"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                    <td class="text-center text-muted"><i class="fas fa-times"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

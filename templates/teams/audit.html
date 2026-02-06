@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Log - {{ team.name }} - SendFiles.Online{% endblock %}
+{% block description %}View team audit log for compliance and security.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></li>
+            <li><span class="current">Audit Log</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <h1 class="mb-4">Audit Log</h1>
+
+            <p class="text-muted mb-4">
+                Track all team activities for compliance and security monitoring.
+            </p>
+
+            {% if logs %}
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Description</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr>
+                                <td class="font-mono small">{{ log.created_at|date:"Y-m-d H:i:s" }}</td>
+                                <td>{{ log.user.email|default:"System" }}</td>
+                                <td>
+                                    <span class="badge {% if 'create' in log.action %}bg-success{% elif 'delete' in log.action or 'remove' in log.action %}bg-danger{% elif 'change' in log.action %}bg-warning{% else %}bg-info{% endif %}">
+                                        {{ log.get_action_display }}
+                                    </span>
+                                </td>
+                                <td>{{ log.description|truncatewords:15 }}</td>
+                                <td class="font-mono small">{{ log.ip_address|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if logs.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if logs.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ logs.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in logs.paginator.page_range %}
+                    {% if logs.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > logs.number|add:'-3' and num < logs.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if logs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ logs.next_page_number }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                    <h3 class="h5">No audit entries yet</h3>
+                    <p class="text-muted mb-0">Team activities will be logged here.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

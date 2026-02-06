@@ -20,6 +20,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from accounts.views import GlobalVars
+from accounts.models import Team, TeamMember, AuditLog
 from transfers.models import Transfer, TransferFile, DownloadEvent, MonthlyUsage, UploadPortal, PortalUpload
 from transfers.notifications import send_download_notification, send_transfer_ready_notification
 from transfers.security import scan_transfer, check_file_extension_safety
@@ -47,6 +48,18 @@ class HomeView(View):
         monthly_usage = MonthlyUsage.get_or_create_for_request(request, request.user if request.user.is_authenticated else None)
         is_pro = request.user.is_authenticated and getattr(request.user, 'is_plan_active', False)
 
+        # Get user's teams for team selector (Business/Enterprise only)
+        user_teams = []
+        if request.user.is_authenticated:
+            plan = getattr(request.user, 'plan_subscribed', '')
+            if plan in ('business', 'enterprise'):
+                memberships = TeamMember.objects.filter(
+                    user=request.user,
+                    is_active=True
+                ).select_related('team')
+                # Only include teams where user can create transfers
+                user_teams = [m.team for m in memberships if m.can_transfer]
+
         return render(request, 'index.html', {
             'g': g,
             'max_size': FILES_LIMIT,
@@ -55,6 +68,7 @@ class HomeView(View):
             'monthly_remaining': monthly_usage.remaining_bytes,
             'monthly_limit': 3 * 1024 * 1024 * 1024,  # 3GB
             'is_pro': is_pro,
+            'user_teams': user_teams,
         })
 
 
@@ -101,6 +115,30 @@ class CreateTransferAPI(APIView):
         # Associate with user if logged in
         if request.user.is_authenticated:
             transfer.user = request.user
+
+        # Team assignment (Business/Enterprise feature)
+        team_id = data.get('team_id')
+        visibility = data.get('visibility', Transfer.VISIBILITY_PRIVATE)
+
+        if team_id and request.user.is_authenticated:
+            try:
+                team = Team.objects.get(id=team_id)
+                # Verify user is an active member with transfer permission
+                membership = TeamMember.objects.filter(
+                    team=team,
+                    user=request.user,
+                    is_active=True
+                ).first()
+
+                if membership and membership.can_transfer:
+                    transfer.team = team
+                    transfer.visibility = visibility
+
+                    # Use team's default expiration if higher than user selected
+                    if team.default_expiration_days > days:
+                        transfer.expires_at = timezone.now() + timedelta(days=team.default_expiration_days)
+            except Team.DoesNotExist:
+                pass  # Silently ignore invalid team_id
 
         transfer.save()
 
@@ -199,6 +237,16 @@ class FinalizeTransferAPI(APIView):
         if transfer.status != Transfer.UPLOADING:
             return Response({'error': 'Transfer already finalized'}, status=400)
 
+        # Check team storage quota if team transfer
+        if transfer.team:
+            team = transfer.team
+            if team.current_storage_bytes + transfer.total_size > team.max_storage_bytes:
+                return Response({
+                    'error': 'Team storage quota exceeded',
+                    'current_usage': team.current_storage_bytes,
+                    'limit': team.max_storage_bytes,
+                }, status=400)
+
         if transfer.file_count == 0:
             return Response({'error': 'No files uploaded'}, status=400)
 
@@ -210,6 +258,23 @@ class FinalizeTransferAPI(APIView):
         if not request.user.is_authenticated or not getattr(request.user, 'is_plan_active', False):
             monthly_usage = MonthlyUsage.get_or_create_for_request(request, request.user if request.user.is_authenticated else None)
             monthly_usage.add_transfer(transfer.total_size)
+
+        # Update team storage usage if team transfer
+        if transfer.team:
+            team = transfer.team
+            team.current_storage_bytes += transfer.total_size
+            team.save(update_fields=['current_storage_bytes'])
+
+            # Log audit
+            AuditLog.log(
+                action=AuditLog.ACTION_TRANSFER_CREATE,
+                user=request.user if request.user.is_authenticated else None,
+                team=team,
+                description=f'Transfer {transfer.short_id} created ({transfer.file_count} files, {transfer.format_size()})',
+                ip_address=get_client_ip(request),
+                user_agent=request.META.get('HTTP_USER_AGENT', ''),
+                metadata={'transfer_id': str(transfer.id), 'short_id': transfer.short_id},
+            )
 
         # Send email notifications to recipients
         if transfer.get_recipients_list():

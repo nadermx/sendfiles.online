@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Analytics - {{ team.name }} - SendFiles.Online{% endblock %}
+{% block description %}View team analytics and statistics.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></li>
+            <li><span class="current">Analytics</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="mb-4">Team Analytics</h1>
+
+            <!-- Summary Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="h2 mb-0 font-mono">{{ stats.total_transfers|default:0 }}</div>
+                            <small class="text-muted">Total Transfers</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="h2 mb-0 font-mono">{{ stats.total_size|default:0|filesizeformat }}</div>
+                            <small class="text-muted">Total Data</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="h2 mb-0 font-mono">{{ stats.total_downloads|default:0 }}</div>
+                            <small class="text-muted">Total Downloads</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="h2 mb-0 font-mono">{{ recent_transfers }}</div>
+                            <small class="text-muted">Last 30 Days</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Breakdown -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Transfers by Status</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for status_info in by_status %}
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="h4 mb-1 font-mono">{{ status_info.count }}</div>
+                            <span class="badge {% if status_info.status == 'ready' %}bg-success{% elif status_info.status == 'uploading' %}bg-warning{% elif status_info.status == 'expired' %}bg-secondary{% else %}bg-danger{% endif %}">
+                                {{ status_info.status|title }}
+                            </span>
+                        </div>
+                        {% empty %}
+                        <div class="col-12 text-center text-muted">
+                            No transfers yet
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Usage -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Storage Usage</strong>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Used: <strong class="font-mono">{{ team.current_storage_bytes|filesizeformat }}</strong></span>
+                        <span>Limit: <strong class="font-mono">{{ team.max_storage_bytes|filesizeformat }}</strong></span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="width: {% widthratio team.current_storage_bytes team.max_storage_bytes 100 %}%;">
+                            {% widthratio team.current_storage_bytes team.max_storage_bytes 100 %}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Info -->
+            <div class="card">
+                <div class="card-header">
+                    <strong>Team Information</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Team Name:</strong> {{ team.name }}</p>
+                            <p><strong>Created:</strong> {{ team.created_at|date:"F d, Y" }}</p>
+                            <p><strong>Owner:</strong> {{ team.owner.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Members:</strong> {{ team.member_count }} / {{ team.max_members }}</p>
+                            <p><strong>Default Expiration:</strong> {{ team.default_expiration_days }} days</p>
+                            <p><strong>2FA Required:</strong> {% if team.require_2fa %}Yes{% else %}No{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

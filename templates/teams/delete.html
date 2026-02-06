@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ team.name }} - SendFiles.Online{% endblock %}
+{% block description %}Permanently delete your team.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></li>
+            <li><span class="current">Delete</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong><i class="fas fa-exclamation-triangle me-2"></i> Delete Team</strong>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> This action cannot be undone. Deleting this team will:
+                        <ul class="mb-0 mt-2">
+                            <li>Remove all team members</li>
+                            <li>Delete all pending invitations</li>
+                            <li>Remove team association from all transfers</li>
+                            <li>Delete all audit logs for this team</li>
+                        </ul>
+                    </div>
+
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <p>To confirm deletion, please type the team name: <strong>{{ team.name }}</strong></p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="confirm_name" class="form-label">Team Name</label>
+                            <input type="text" class="form-control" id="confirm_name" name="confirm_name" required placeholder="Type team name to confirm">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i> Delete Team Permanently
+                            </button>
+                            <a href="{% url 'team_settings' slug=team.slug %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

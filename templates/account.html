@@ -84,6 +84,16 @@
                 </p>
             </div>
         </div>
+        {% if user.plan_subscribed in 'business,enterprise' %}
+        <hr>
+        <br>
+        <h3>Teams</h3>
+        <p class="text-muted">Collaborate with your team on file transfers.</p>
+        <a class="btn btn-outline-primary" href="{% url 'team_list' %}">
+            <i class="fas fa-users me-2"></i> Manage Teams
+        </a>
+        {% endif %}
+
         <hr>
         <br>
         <h3>{{ g.i18n.billing_history|default:"Billing History" }}</h3>

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Transfers - {{ team.name }} - SendFiles.Online{% endblock %}
+{% block description %}View all team transfers.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></li>
+            <li><span class="current">Transfers</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Team Transfers</h1>
+            </div>
+
+            {% if transfers %}
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Files</th>
+                                <th>Size</th>
+                                <th>Created By</th>
+                                <th>Status</th>
+                                <th>Visibility</th>
+                                <th>Created</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transfer in transfers %}
+                            <tr>
+                                <td class="font-mono">{{ transfer.short_id }}</td>
+                                <td>{{ transfer.title|default:"-"|truncatewords:5 }}</td>
+                                <td>{{ transfer.file_count }}</td>
+                                <td class="font-mono">{{ transfer.total_size|filesizeformat }}</td>
+                                <td>{{ transfer.user.email|default:transfer.sender_email|default:"Anonymous" }}</td>
+                                <td>
+                                    {% if transfer.status == 'ready' %}
+                                    <span class="badge bg-success">Ready</span>
+                                    {% elif transfer.status == 'uploading' %}
+                                    <span class="badge bg-warning">Uploading</span>
+                                    {% elif transfer.status == 'expired' %}
+                                    <span class="badge bg-secondary">Expired</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">{{ transfer.status|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if transfer.visibility == 'team' %}
+                                    <span class="badge bg-info">Team</span>
+                                    {% elif transfer.visibility == 'private' %}
+                                    <span class="badge bg-secondary">Private</span>
+                                    {% else %}
+                                    <span class="badge bg-primary">Public</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ transfer.created_at|date:"M d, Y" }}</td>
+                                <td class="text-end">
+                                    <a href="{% url 'download_page' short_id=transfer.short_id %}" class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if transfers.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if transfers.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ transfers.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in transfers.paginator.page_range %}
+                    {% if transfers.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > transfers.number|add:'-3' and num < transfers.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if transfers.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ transfers.next_page_number }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h3 class="h5">No transfers yet</h3>
+                    <p class="text-muted mb-0">Create a transfer and assign it to this team to see it here.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

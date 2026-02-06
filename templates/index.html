@@ -111,6 +111,29 @@
 
             <!-- Transfer Options -->
             <div id="options-section" style="display: none;">
+                <!-- Team Selector (Business/Enterprise only) -->
+                {% if user_teams %}
+                <div class="options-grid mb-3">
+                    <div class="option-group">
+                        <label class="option-label">Assign to Team</label>
+                        <select id="team-select" class="form-select form-select-sm">
+                            <option value="">Personal Transfer</option>
+                            {% for team in user_teams %}
+                            <option value="{{ team.id }}">{{ team.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="option-group" id="visibility-group" style="display: none;">
+                        <label class="option-label">Visibility</label>
+                        <select id="visibility-select" class="form-select form-select-sm">
+                            <option value="private">Private (only you)</option>
+                            <option value="team" selected>Team (all members)</option>
+                            <option value="public">Public (anyone with link)</option>
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Expiration & Limits Row -->
                 <div class="options-grid mb-3">
                     <div class="option-group">
@@ -330,6 +353,15 @@ passwordOption.addEventListener('change', () => {
     passwordSection.style.display = passwordOption.checked ? 'block' : 'none';
 });
 
+// Team selector toggle (for visibility options)
+const teamSelect = document.getElementById('team-select');
+const visibilityGroup = document.getElementById('visibility-group');
+if (teamSelect && visibilityGroup) {
+    teamSelect.addEventListener('change', () => {
+        visibilityGroup.style.display = teamSelect.value ? 'block' : 'none';
+    });
+}
+
 // Auto-delete option toggle
 const autoDeleteOption = document.getElementById('auto-delete-option');
 const downloadLimitSelect = document.getElementById('download-limit-select');
@@ -462,6 +494,12 @@ uploadBtn.addEventListener('click', async () => {
         const allowedDomains = document.getElementById('allowed-domains').value.trim();
         const allowedIps = document.getElementById('allowed-ips').value.trim();
 
+        // Team options
+        const teamSelectEl = document.getElementById('team-select');
+        const visibilitySelectEl = document.getElementById('visibility-select');
+        const teamId = teamSelectEl ? teamSelectEl.value : '';
+        const visibility = visibilitySelectEl && teamId ? visibilitySelectEl.value : 'private';
+
         // Create transfer
         const createResponse = await fetch('/api/transfers/', {
             method: 'POST',
@@ -481,6 +519,8 @@ uploadBtn.addEventListener('click', async () => {
                 require_email_verification: requireEmailVerification,
                 allowed_domains: allowedDomains,
                 allowed_ips: allowedIps,
+                team_id: teamId || null,
+                visibility: visibility,
             }),
         });
 

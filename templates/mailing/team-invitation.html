@@ -1,0 +1,22 @@
+You've been invited to join <b>{{ team_name }}</b> on SendFiles.Online!
+<br>
+<br>
+<b>{{ invited_by }}</b> has invited you to join as <b>{{ role }}</b>.
+<br>
+<br>
+<a href="{{ accept_url }}" style="display: inline-block; background-color: #111111; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold;">Accept Invitation</a>
+<br>
+<br>
+Or copy and paste this link into your browser:
+<br>
+{{ accept_url }}
+<br>
+<br>
+<small style="color: #666;">
+Don't want to join? <a href="{{ decline_url }}">Decline this invitation</a>
+<br>
+This invitation expires on {{ expires_at|date:"F d, Y" }}.
+</small>
+<br>
+<br>
+Team SendFiles.Online

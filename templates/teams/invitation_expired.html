@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Invitation Expired - SendFiles.Online{% endblock %}
+{% block description %}This team invitation has expired.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                    <h2>Invitation Expired</h2>
+                    <p class="text-muted">
+                        This team invitation has expired. Please ask the team administrator to send you a new invitation.
+                    </p>
+                    <a href="{% url 'team_list' %}" class="btn btn-primary">
+                        Go to Teams
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

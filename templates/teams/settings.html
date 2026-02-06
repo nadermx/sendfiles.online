@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}{{ team.name }} Settings - SendFiles.Online{% endblock %}
+{% block description %}Configure team settings and permissions.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><a href="{% url 'team_detail' slug=team.slug %}">{{ team.name }}</a></li>
+            <li><span class="current">Settings</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="mb-4">Team Settings</h1>
+
+            {% if success %}
+            <div class="alert alert-success">
+                {{ success }}
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- General Settings -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>General</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Team Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ team.name }}" required>
+                        </div>
+                        <div class="mb-0">
+                            <label for="max_members" class="form-label">Maximum Members</label>
+                            <input type="number" class="form-control" id="max_members" name="max_members" value="{{ team.max_members }}" min="1" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transfer Settings -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Transfer Defaults</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-0">
+                            <label for="default_expiration_days" class="form-label">Default Expiration (days)</label>
+                            <input type="number" class="form-control" id="default_expiration_days" name="default_expiration_days" value="{{ team.default_expiration_days }}" min="1" max="365">
+                            <div class="form-text">New team transfers will expire after this many days by default.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Security</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="require_2fa" name="require_2fa" {% if team.require_2fa %}checked{% endif %}>
+                            <label class="form-check-label" for="require_2fa">
+                                Require two-factor authentication for members
+                            </label>
+                            <div class="form-text">Members must have 2FA enabled to access team content.</div>
+                        </div>
+                        <div class="mb-0">
+                            <label for="allowed_domains" class="form-label">Allowed Email Domains</label>
+                            <input type="text" class="form-control" id="allowed_domains" name="allowed_domains" value="{{ team.allowed_domains }}" placeholder="company.com, partner.org">
+                            <div class="form-text">Restrict team membership to users with emails from these domains (comma-separated). Leave blank for no restriction.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branding Settings -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>Branding</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-0">
+                            <input class="form-check-input" type="checkbox" id="use_owner_branding" name="use_owner_branding" {% if team.use_owner_branding %}checked{% endif %}>
+                            <label class="form-check-label" for="use_owner_branding">
+                                Use owner's branding settings for team transfers
+                            </label>
+                            <div class="form-text">Apply the team owner's custom branding to download pages.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i> Save Settings
+                    </button>
+                    {% if membership.role == 'owner' %}
+                    <a href="{% url 'team_delete' slug=team.slug %}" class="btn btn-outline-danger">
+                        <i class="fas fa-trash me-2"></i> Delete Team
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

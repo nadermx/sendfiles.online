@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}{{ team.name }} - Teams - SendFiles.Online{% endblock %}
+{% block description %}Manage your team and view recent transfers.{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb-nav">
+    <div class="container">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="{% url 'team_list' %}">Teams</a></li>
+            <li><span class="current">{{ team.name }}</span></li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h1 class="mb-1">{{ team.name }}</h1>
+                    <span class="badge bg-secondary me-2">{{ membership.get_role_display }}</span>
+                    <small class="text-muted">Created {{ team.created_at|date:"M d, Y" }}</small>
+                </div>
+                {% if membership.can_manage_members %}
+                <div>
+                    <a href="{% url 'team_settings' slug=team.slug %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Transfers -->
+            <h2 class="h5 mb-3">Recent Transfers</h2>
+            {% if recent_transfers %}
+            <div class="list-group mb-4">
+                {% for transfer in recent_transfers %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="d-flex align-items-center mb-1">
+                                <strong class="font-mono">{{ transfer.short_id }}</strong>
+                                <span class="badge bg-light text-dark ms-2">{{ transfer.file_count }} file{{ transfer.file_count|pluralize }}</span>
+                                {% if transfer.visibility == 'team' %}
+                                <span class="badge bg-info ms-1">Team</span>
+                                {% elif transfer.visibility == 'private' %}
+                                <span class="badge bg-secondary ms-1">Private</span>
+                                {% endif %}
+                            </div>
+                            {% if transfer.title %}
+                            <p class="text-muted small mb-1">"{{ transfer.title|truncatewords:10 }}"</p>
+                            {% endif %}
+                            <small class="text-muted">{{ transfer.created_at|date:"M d, Y H:i" }} by {{ transfer.user.email|default:transfer.sender_email|default:"Anonymous" }}</small>
+                        </div>
+                        <a href="{% url 'download_page' short_id=transfer.short_id %}" class="btn btn-sm btn-outline-primary">
+                            View Files
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <a href="{% url 'team_transfers' slug=team.slug %}" class="btn btn-outline-secondary btn-sm">
+                View All Transfers
+            </a>
+            {% else %}
+            <div class="card mb-4">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                    <p class="text-muted mb-0">No transfers yet. Create a transfer and assign it to this team.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Stats Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Statistics</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 text-center">
+                        <div class="col-4">
+                            <div class="h4 mb-0 font-mono">{{ total_transfers }}</div>
+                            <small class="text-muted">Transfers</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h4 mb-0 font-mono">{{ member_count }}</div>
+                            <small class="text-muted">Members</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="h4 mb-0 font-mono">
+                                {% widthratio total_size 1073741824 1 %}GB
+                            </div>
+                            <small class="text-muted">Data</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Quick Links</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'team_members' slug=team.slug %}" class="text-decoration-none">
+                            <i class="fas fa-users me-2"></i> Members
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'team_transfers' slug=team.slug %}" class="text-decoration-none">
+                            <i class="fas fa-file-alt me-2"></i> All Transfers
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'team_analytics' slug=team.slug %}" class="text-decoration-none">
+                            <i class="fas fa-chart-bar me-2"></i> Analytics
+                        </a>
+                    </li>
+                    {% if membership.can_manage_members %}
+                    <li class="list-group-item">
+                        <a href="{% url 'team_audit_log' slug=team.slug %}" class="text-decoration-none">
+                            <i class="fas fa-history me-2"></i> Audit Log
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'team_invite_member' slug=team.slug %}" class="text-decoration-none">
+                            <i class="fas fa-user-plus me-2"></i> Invite Member
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Storage Usage -->
+            <div class="card">
+                <div class="card-header">
+                    <strong>Storage Usage</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>{{ team.current_storage_bytes|filesizeformat }}</span>
+                            <span>{{ team.max_storage_bytes|filesizeformat }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar" role="progressbar" style="width: {% widthratio team.current_storage_bytes team.max_storage_bytes 100 %}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
