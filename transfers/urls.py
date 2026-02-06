@@ -21,12 +21,17 @@ from transfers.views import (
     AnalyticsDashboardView,
     TransferAnalyticsView,
 )
+from transfers.tus_views import TusUploadView
 
 urlpatterns = [
     # API endpoints
     path('api/transfers/', CreateTransferAPI.as_view(), name='create_transfer'),
     path('api/transfers/<uuid:transfer_id>/upload/', UploadFileAPI.as_view(), name='upload_file'),
     path('api/transfers/<uuid:transfer_id>/finalize/', FinalizeTransferAPI.as_view(), name='finalize_transfer'),
+
+    # TUS resumable upload endpoints
+    path('api/tus/<uuid:transfer_id>/', TusUploadView.as_view(), name='tus_upload'),
+    path('api/tus/<uuid:transfer_id>/<str:upload_id>/', TusUploadView.as_view(), name='tus_upload_file'),
 
     # Download pages
     path('d/<str:short_id>/', DownloadPageView.as_view(), name='download_page'),

@@ -33,3 +33,6 @@ django-select2>=8.2
 # Utilities
 python-dateutil>=2.9
 pytz>=2024.1
+
+# Resumable uploads (tus protocol)
+django-tus>=0.6
