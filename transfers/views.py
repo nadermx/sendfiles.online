@@ -52,7 +52,7 @@ class HomeView(View):
         user_teams = []
         if request.user.is_authenticated:
             plan = getattr(request.user, 'plan_subscribed', '')
-            if plan in ('business', 'enterprise'):
+            if plan in ('business', 'team'):
                 memberships = TeamMember.objects.filter(
                     user=request.user,
                     is_active=True

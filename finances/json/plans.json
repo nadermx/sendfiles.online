@@ -1,21 +1,21 @@
 {
-    "starter": {
-        "code_name": "starter",
-        "price": 9,
+    "pro": {
+        "code_name": "pro",
+        "price": 10,
         "credits": 100,
         "days": 31,
         "subscription": true
     },
-    "pro": {
-        "code_name": "pro",
-        "price": 29,
+    "business": {
+        "code_name": "business",
+        "price": 25,
         "credits": 500,
         "days": 31,
         "subscription": true
     },
-    "enterprise": {
-        "code_name": "enterprise",
-        "price": 99,
+    "team": {
+        "code_name": "team",
+        "price": 49,
         "credits": 2000,
         "days": 31,
         "subscription": true

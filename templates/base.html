@@ -555,7 +555,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/send-large-files/">Platforms</a>
                     </li>
-                    {% if user.is_authenticated and user.plan_subscribed in 'business,enterprise' %}
+                    {% if user.is_authenticated and user.plan_subscribed in 'business,team' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'team_list' %}">Teams</a>
                     </li>

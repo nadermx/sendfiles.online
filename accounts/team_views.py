@@ -43,7 +43,7 @@ class TeamRequiredMixin(LoginRequiredMixin):
 
         # Check if user has Business or Enterprise plan
         plan = getattr(request.user, 'plan_subscribed', '')
-        if plan not in ('business', 'enterprise'):
+        if plan not in ('business', 'team'):
             return redirect('pricing')
 
         return super().dispatch(request, *args, **kwargs)

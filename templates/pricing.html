@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}Pricing - SendFiles.Online | File Sharing Plans{% endblock %}
-{% block description %}SendFiles.Online pricing. Free 3GB transfers. Pro $10/mo for 200GB. Business $25/mo for 1TB with API access. No hidden fees.{% endblock %}
+{% block description %}SendFiles.Online pricing. Free 3GB transfers. Pro $10/mo, Business $25/mo, Team $49/mo. No hidden fees, no sales calls.{% endblock %}
 {% block og_title %}Pricing - SendFiles.Online{% endblock %}
-{% block og_description %}Free 3GB transfers. Pro $10/mo, Business $25/mo with API access.{% endblock %}
+{% block og_description %}Free 3GB transfers. Pro $10/mo, Business $25/mo, Team $49/mo.{% endblock %}
 {% block twitter_title %}Pricing - SendFiles.Online{% endblock %}
-{% block twitter_description %}Free 3GB transfers. Pro and Business plans available.{% endblock %}
+{% block twitter_description %}Free 3GB transfers. Pro, Business, and Team plans available.{% endblock %}
 {% block canonical_path %}/pricing/{% endblock %}
 
 {% block structured_data %}
@@ -28,7 +28,8 @@
     "offers": [
         {"@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD"},
         {"@type": "Offer", "name": "Pro", "price": "10", "priceCurrency": "USD", "priceValidUntil": "2027-12-31"},
-        {"@type": "Offer", "name": "Business", "price": "25", "priceCurrency": "USD", "priceValidUntil": "2027-12-31"}
+        {"@type": "Offer", "name": "Business", "price": "25", "priceCurrency": "USD", "priceValidUntil": "2027-12-31"},
+        {"@type": "Offer", "name": "Team", "price": "49", "priceCurrency": "USD", "priceValidUntil": "2027-12-31"}
     ]
 }
 </script>
@@ -145,29 +146,30 @@
             </div>
         </div>
 
-        <!-- Enterprise Plan -->
+        <!-- Team Plan -->
         <div class="col-lg-3 col-md-6">
             <div class="card h-100">
                 <div class="card-body p-4 d-flex flex-column">
-                    <h2 class="h4 mb-1">Enterprise</h2>
-                    <p class="text-muted small mb-3">For large organizations</p>
+                    <h2 class="h4 mb-1">Team</h2>
+                    <p class="text-muted small mb-3">For growing teams</p>
 
                     <div class="mb-4">
-                        <span class="display-5 fw-bold">Custom</span>
+                        <span class="display-5 fw-bold">$49</span>
+                        <span class="text-muted">/month</span>
                     </div>
 
                     <ul class="list-unstyled mb-4 flex-grow-1">
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>Unlimited</strong> transfer size</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>Custom</strong> retention</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>2TB</strong> per transfer</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>1 year</strong> storage</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited transfers</li>
                         <li class="mb-2"><i class="fas fa-check text-success me-2"></i> All Business features</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited team members</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> SSO/SAML integration</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Dedicated support</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> SLA guarantee</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom domain</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <strong>25 team members</strong></li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> SSO integration</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Audit logs</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority support</li>
                     </ul>
 
-                    <a href="/contact/" class="btn btn-outline-dark btn-lg w-100">Contact Sales</a>
+                    <a href="/checkout/?plan=team" class="btn btn-outline-dark btn-lg w-100">Get Team</a>
                 </div>
             </div>
         </div>
@@ -204,7 +206,7 @@
                             <th class="text-center">Free</th>
                             <th class="text-center bg-primary bg-opacity-10">Pro</th>
                             <th class="text-center">Business</th>
-                            <th class="text-center">Enterprise</th>
+                            <th class="text-center">Team</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -213,14 +215,14 @@
                             <td class="text-center">3GB</td>
                             <td class="text-center bg-primary bg-opacity-10"><strong>200GB</strong></td>
                             <td class="text-center"><strong>1TB</strong></td>
-                            <td class="text-center"><strong>Unlimited</strong></td>
+                            <td class="text-center"><strong>2TB</strong></td>
                         </tr>
                         <tr>
                             <td>Storage duration</td>
                             <td class="text-center">7 days</td>
                             <td class="text-center bg-primary bg-opacity-10">30 days</td>
                             <td class="text-center">90 days</td>
-                            <td class="text-center">Custom</td>
+                            <td class="text-center">1 year</td>
                         </tr>
                         <tr>
                             <td>Transfers per month</td>
@@ -276,21 +278,35 @@
                             <td class="text-center">1</td>
                             <td class="text-center bg-primary bg-opacity-10">1</td>
                             <td class="text-center">10</td>
-                            <td class="text-center">Unlimited</td>
+                            <td class="text-center">25</td>
+                        </tr>
+                        <tr>
+                            <td>SSO integration</td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Audit logs</td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center bg-primary bg-opacity-10"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-times text-muted"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-success"></i></td>
                         </tr>
                         <tr>
                             <td>Support</td>
                             <td class="text-center">-</td>
                             <td class="text-center bg-primary bg-opacity-10">Email</td>
+                            <td class="text-center">Email</td>
                             <td class="text-center">Priority</td>
-                            <td class="text-center">Dedicated</td>
                         </tr>
                         <tr>
                             <td><strong>Price</strong></td>
                             <td class="text-center"><strong>Free</strong></td>
                             <td class="text-center bg-primary bg-opacity-10"><strong>$10/mo</strong></td>
                             <td class="text-center"><strong>$25/mo</strong></td>
-                            <td class="text-center"><strong>Custom</strong></td>
+                            <td class="text-center"><strong>$49/mo</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -313,7 +329,7 @@
                     </h3>
                     <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#pricingFaq">
                         <div class="accordion-body text-muted">
-                            Our pricing is competitive with WeTransfer. Free tier offers 3GB (similar to WeTransfer's 2GB). Our Pro plan at $10/month offers <strong>200GB transfers</strong> - much more than WeTransfer's starter tier. Business at $25/month includes <strong>1TB transfers</strong>, API access, and team features.
+                            Our pricing is competitive with WeTransfer. Free tier offers 3GB (vs WeTransfer's 2GB). Pro at $10/month offers <strong>200GB transfers</strong>. Business at $25/month includes <strong>1TB transfers</strong>, API access, and up to 10 team members. Team at $49/month adds <strong>2TB transfers</strong>, 25 team members, SSO, and audit logs - all self-service, no sales calls needed.
                         </div>
                     </div>
                 </div>
