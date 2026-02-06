@@ -53,7 +53,7 @@ class HomeView(View):
             'max_size_gb': FILES_LIMIT / (1024 ** 3),
             'monthly_used': monthly_usage.bytes_transferred,
             'monthly_remaining': monthly_usage.remaining_bytes,
-            'monthly_limit': 10 * 1024 * 1024 * 1024,  # 10GB
+            'monthly_limit': 3 * 1024 * 1024 * 1024,  # 3GB
             'is_pro': is_pro,
         })
 

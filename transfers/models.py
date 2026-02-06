@@ -621,14 +621,14 @@ class MonthlyUsage(models.Model):
 
     @property
     def remaining_bytes(self):
-        """Return remaining bytes for free tier (10GB/month)."""
-        FREE_TIER_MONTHLY_LIMIT = 10 * 1024 * 1024 * 1024  # 10GB
+        """Return remaining bytes for free tier (3GB/month)."""
+        FREE_TIER_MONTHLY_LIMIT = 3 * 1024 * 1024 * 1024  # 3GB
         return max(0, FREE_TIER_MONTHLY_LIMIT - self.bytes_transferred)
 
     @property
     def is_limit_exceeded(self):
         """Check if monthly limit is exceeded."""
-        FREE_TIER_MONTHLY_LIMIT = 10 * 1024 * 1024 * 1024  # 10GB
+        FREE_TIER_MONTHLY_LIMIT = 3 * 1024 * 1024 * 1024  # 3GB
         return self.bytes_transferred >= FREE_TIER_MONTHLY_LIMIT
 
 

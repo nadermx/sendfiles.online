@@ -588,7 +588,7 @@ class PlatformIndexPage(View):
             'platforms/index.html',
             {
                 'title': f"Send Large Files on Any Platform | {config.PROJECT_NAME}",
-                'description': 'Learn how to send large files on WhatsApp, Instagram, Facebook, Gmail, Slack, Discord, and 50+ other platforms. Free transfers up to 10GB.',
+                'description': 'Learn how to send large files on WhatsApp, Instagram, Facebook, Gmail, Slack, Discord, and 50+ other platforms. Free transfers up to 3GB.',
                 'page': 'platforms',
                 'g': settings,
                 'platforms_by_category': platforms_by_category,
@@ -613,7 +613,7 @@ class PlatformGuidePage(View):
 
         # SEO metadata
         title = f"How to Send Large Files on {platform['name']} | {config.PROJECT_NAME}"
-        description = f"Send files larger than {platform['file_limit']} on {platform['name']}. Free transfers up to 10GB. No signup required. Share the download link and your recipient downloads instantly."
+        description = f"Send files larger than {platform['file_limit']} on {platform['name']}. Free transfers up to 3GB. No signup required. Share the download link and your recipient downloads instantly."
 
         return render(
             request,

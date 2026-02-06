@@ -1105,7 +1105,7 @@ PLATFORMS = {
         'file_limit_note': '2GB free, 200GB with Pro',
         'users': '80 million',
         'share_method': 'link sharing',
-        'share_instruction': 'SendFiles.Online offers 10GB free transfers - 5x more than WeTransfer\'s 2GB limit. No email required, just upload and share.',
+        'share_instruction': 'SendFiles.Online offers 3GB free transfers - 5x more than WeTransfer\'s 2GB limit. No email required, just upload and share.',
         'app_instruction': 'Compare with wetransfer.com',
         'is_active': True,
     },
@@ -1161,7 +1161,7 @@ PLATFORMS = {
         'file_limit_note': '200MB per file',
         'users': 'millions',
         'share_method': 'link sharing',
-        'share_instruction': 'Need to share files larger than Catbox\'s 200MB limit? SendFiles.Online handles up to 10GB with the same easy link sharing.',
+        'share_instruction': 'Need to share files larger than Catbox\'s 200MB limit? SendFiles.Online handles up to 3GB with the same easy link sharing.',
         'app_instruction': 'Compare with catbox.moe',
         'is_active': True,
     },
@@ -1175,7 +1175,7 @@ PLATFORMS = {
         'file_limit_note': '250MB and 10 min for free',
         'users': 'millions',
         'share_method': 'link sharing',
-        'share_instruction': 'For videos larger than Streamable allows, use SendFiles.Online. Share videos up to 10GB with a simple download link.',
+        'share_instruction': 'For videos larger than Streamable allows, use SendFiles.Online. Share videos up to 3GB with a simple download link.',
         'app_instruction': 'Compare with streamable.com',
         'is_active': True,
     },
@@ -9138,7 +9138,7 @@ def generate_faqs(platform):
     return [
         {
             'question': f'How do I send large files on {name}?',
-            'answer': f'Upload your files to SendFiles.Online (up to 10GB free), copy the download link, and share it on {name}. Your recipient can download directly without any account.'
+            'answer': f'Upload your files to SendFiles.Online (up to 3GB free), copy the download link, and share it on {name}. Your recipient can download directly without any account.'
         },
         {
             'question': f'What is the file size limit on {name}?',
@@ -9146,11 +9146,11 @@ def generate_faqs(platform):
         },
         {
             'question': f'Can I send files larger than {limit} on {name}?',
-            'answer': f'Yes! While {name} limits direct file sharing to {limit}, you can use SendFiles.Online to share files up to 10GB. Just upload your files, get a link, and share it on {name}.'
+            'answer': f'Yes! While {name} limits direct file sharing to {limit}, you can use SendFiles.Online to share files up to 3GB. Just upload your files, get a link, and share it on {name}.'
         },
         {
             'question': f'Is it free to send large files on {name}?',
-            'answer': f'Yes, SendFiles.Online offers free transfers up to 10GB with 14-day storage. Upload your files, share the link on {name}, and your recipients can download for free.'
+            'answer': f'Yes, SendFiles.Online offers free transfers up to 3GB with 14-day storage. Upload your files, share the link on {name}, and your recipients can download for free.'
         },
         {
             'question': 'How long do shared files stay available?',
