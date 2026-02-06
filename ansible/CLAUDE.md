@@ -12,14 +12,13 @@ Ansible deployment automation for sendfiles.online. Deploys Django + Gunicorn + 
 - **Service:** sendfiles (supervisor)
 - **Path:** /home/www/sendfiles/
 - **Logs:** /var/log/sendfiles/
+- **Venv:** /home/www/sendfiles/venv/
 
 ## Common Commands
 
 ```bash
-# Deploy code updates
-ansible-playbook -i servers gitpull.yml
-
-# Restart application
+# Deploy code updates (git pull + restart)
+ansible -i servers all -m shell -a "cd /home/www/sendfiles && git pull" --become
 ansible -i servers all -m shell -a "supervisorctl restart sendfiles" --become
 
 # Check logs
@@ -27,6 +26,9 @@ ansible -i servers all -m shell -a "tail -100 /var/log/sendfiles/sendfiles.err.l
 
 # Run Django management commands
 ansible -i servers all -m shell -a "cd /home/www/sendfiles && /home/www/sendfiles/venv/bin/python manage.py migrate" --become
+
+# Install/update pip requirements
+ansible -i servers all -m shell -a "/home/www/sendfiles/venv/bin/pip install -r /home/www/sendfiles/requirements.txt" --become
 
 # Run shell commands on server
 ansible -i servers all -m shell -a "command here" --become
@@ -59,11 +61,11 @@ ansible-playbook -i servers djangodeployubuntu20.yml
 
 - **djangodeployubuntu20.yml** - Full server setup (packages, nginx, supervisor, virtualenv, clone repo)
 - **disableroot.yml** - Security hardening (disable root SSH)
-- **gitpull.yml** - Deploy updates (not included, typically just runs git pull)
 
 ## Stack Details
 
-- Gunicorn binds to `[::1]:8000` and unix socket at `/home/www/{location}/app.sock`
-- Nginx proxies to `[::1]:8000` with gzip compression
+- Gunicorn binds to `127.0.0.1:8000`
+- Nginx proxies to `127.0.0.1:8000` with gzip compression
 - Static files served directly from `/home/www/{location}/static/`
-- Max upload size: 10GB (`client_max_body_size 10000m`)
+- Max upload size: ~10GB (`client_max_body_size 10000m`)
+- Uploads use TUS protocol for resumable chunked uploads (5MB chunks)
