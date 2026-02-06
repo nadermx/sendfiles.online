@@ -529,7 +529,21 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/send-large-files/">Platforms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pricing/">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about/">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact/">Contact</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="/account/">Account</a>
@@ -542,7 +556,7 @@
                         <a class="nav-link" href="/login/">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/pricing/">Pricing</a>
+                        <a class="nav-link btn btn-primary btn-sm text-white px-3" href="/pricing/">Get Started</a>
                     </li>
                     {% endif %}
                 </ul>
